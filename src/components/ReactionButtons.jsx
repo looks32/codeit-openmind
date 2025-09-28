@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import ReactionButton from "./ReactionButton";
+import styled from 'styled-components';
+import ReactionButton from './ReactionButton';
 
 const Wrapper = styled.div`
   display: flex;
@@ -17,14 +17,14 @@ export default function ReactionButtons({
   return (
     <Wrapper>
       <ReactionButton
-        icon="thumbs-up.svg"
-        label={`좋아요 ${likeCount > 0 ? likeCount : ""}`}
+        icon="/thumbs-up.svg"
+        label={`좋아요 ${likeCount > 0 ? likeCount : ''}`}
         active={likeActive}
         color="#1877F2"
         onClick={onLike}
       />
       <ReactionButton
-        icon="thumbs-down.svg"
+        icon="/thumbs-down.svg"
         label="싫어요"
         active={dislikeActive}
         color="black"

@@ -1,42 +1,198 @@
-import FeedCard from "../components/FeedCard/FeedCard";
-import FeedCardGroup from "../components/FeedCard/FeedCardGroup";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import ButtonBox from '../components/ButtonBox';
+import { createSubject, findSubjectByName } from '../utill/api';
+
+const Page = styled.div`
+  position: relative;
+  min-height: 100vh; /* fallback */
+  min-height: 100dvh; /* 모바일 주소창 높이 변화 대응 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 56px 20px 56px; /* 불필요한 하단 여백 제거 */
+  box-sizing: border-box;
+  /* 배경은 별도의 고정 레이어로 분리 */
+  background: transparent;
+`;
+
+const Bg = styled.div`
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  z-index: -1; /* 콘텐츠 뒤에서 표시 */
+  pointer-events: none;
+  background-image: url('/home.svg');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover; /* 항상 화면을 가득 채우고 필요 시 잘라냄 */
+`;
+
+const GoAskLink = styled(Link)`
+  position: absolute;
+  top: 24px;
+  right: clamp(
+    16px,
+    6vw,
+    64px
+  ); /* 넓을수록 왼쪽으로 더 떨어졌다가 작아질수록 오른쪽으로 접근 */
+  padding: 12px 18px;
+  border: 1px solid #bdb0a7;
+  border-radius: 10px;
+  color: #5b4536;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--Brown-10, #f5f1ee);
+  transition:
+    background 0.2s,
+    color 0.2s,
+    right 0.2s;
+
+  &:hover {
+    background: #faf7f5;
+  }
+
+  &:active {
+    background: var(--Brown-20, #e4d5c9);
+  }
+
+  /* 모바일에서는 로고와 입력창 사이로 내려오며 고정 너비 110px */
+  @media (max-width: 640px) {
+    position: static;
+    display: inline-block;
+    width: 110px;
+    align-self: center;
+    text-align: center;
+    margin: 8px 0; /* 로고와 카드 사이 간격 */
+  }
+`;
+
+const Hero = styled.section`
+  margin-top: 40px;
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px; /* 버튼이 이 영역에 들어오므로 간격 조정 */
+`;
+
+const Logo = styled.img`
+  width: 360px;
+  max-width: 90vw;
+  height: auto;
+`;
+
+const Card = styled.form`
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eee7e2;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const InputWrap = styled.div`
+  position: relative;
+`;
+
+const SearchIcon = styled.span`
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: #bdbdbd;
+  font-size: 18px;
+  pointer-events: none;
+`;
+
+const NameInput = styled.input`
+  width: 100%;
+  height: 48px;
+  padding: 0 16px 0 40px; /* space for icon */
+  border: 1px solid #818181;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 16px;
+  color: #222;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border 0.2s,
+    background 0.2s;
+
+  &::placeholder {
+    color: #bdbdbd;
+    font-size: 16px;
+  }
+
+  &:focus {
+    border: 2px solid #bdb0a7;
+    background: #fff;
+  }
+`;
 
 function Home() {
+  const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const trimmed = name.trim();
+    if (!trimmed || loading) return;
+
+    try {
+      setLoading(true);
+
+      // 1) 기존 피드가 있는지 확인
+      const existing = await findSubjectByName(trimmed);
+      if (existing?.id) {
+        navigate(`/post/${existing.id}/answer`);
+        return;
+      }
+
+      // 2) 없으면 새로 생성
+      const created = await createSubject(trimmed);
+      navigate(`/post/${created.id}/answer`);
+    } catch (err) {
+      console.error(err);
+      alert('피드 생성/조회에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div style={{ padding: 16 }}>
-      <FeedCardGroup>
-        {/* 1) 미답변 - 빈 입력 (버튼 비활성) */}
-        <FeedCard
-          questionProps={{ question: "좋아하는 동물은?", timeAgo: "2주전", state: "pending" }}
-          answerProps={{ state: "pending", userName: "아초는고양이" }}
-          likes={"좋아요"}
-          dislikes={"싫어요"}
-        />
+    <Page>
+      <Bg />
+      <Hero>
+        <Logo src="/big_logo.png" alt="OPENMIND" />
+        <GoAskLink to="/list">질문하러 가기 →</GoAskLink>
 
-        {/* 2) 미답변 - 예시 텍스트로 활성화 상태를 보여주기 위해 placeholder만 그대로, 실제 활성은 사용자가 입력하면 됨 */}
-        <FeedCard
-          questionProps={{ question: "좋아하는 동물은?", timeAgo: "2주전", state: "pending" }}
-          answerProps={{ state: "pending", userName: "아초는고양이" }}
-          likes={"좋아요"}
-          dislikes={"싫어요"}
-        />
-
-        {/* 3) 답변 완료 */}
-        <FeedCard
-          questionProps={{ question: "좋아하는 동물은?좋아하는 동물은?좋아하는 동물은? 좋아하동 물은?", timeAgo: "2주전", state: "answered" }}
-          answerProps={{ state: "answered", userName: "아초는고양이", timeAgo: "2주전", answer: `그릇을 몰라 귀는 이상 오직 피고, 가슴이 이상, 못할 범바람이다. 찾아다녀도, 젖인 방향하였다.` }}
-          likes={12}
-          dislikes={0}
-        />
-
-        <FeedCard
-          questionProps={{ question: "좋아하는 동물은?좋아하는 동물은?좋아하는 동물은? 좋아하동 물은?", timeAgo: "2주전", state: "answered" }}
-          answerProps={{ state: "rejected", userName: "아초는고양이", timeAgo: "2주전"}}
-          likes={12}
-          dislikes={0}
-        />
-      </FeedCardGroup>
-    </div>
+        <Card onSubmit={handleSubmit}>
+          <InputWrap>
+            <SearchIcon>
+              <img src="/Person.svg" alt="Person" />
+            </SearchIcon>
+            <NameInput
+              type="text"
+              placeholder="이름을 입력하세요"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </InputWrap>
+          <ButtonBox type="submit" disabled={!name.trim() || loading}>
+            {loading ? '생성 중...' : '질문 받기'}
+          </ButtonBox>
+        </Card>
+      </Hero>
+    </Page>
   );
 }
 

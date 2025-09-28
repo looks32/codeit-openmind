@@ -1,11 +1,5 @@
-import Qcard from '../components/Qcard';
-
 function List() {
-  return (
-    <div>
-      <Qcard />
-    </div>
-  );
+  return <div>List</div>;
 }
 
 export default List;
