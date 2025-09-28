@@ -1,3 +1,3 @@
 export default function Profile() {
-  return <div>Profile</div>;
+  return <img src="example.svg" alt="Profile" width="30" height="30" />;
 }

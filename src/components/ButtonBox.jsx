@@ -20,7 +20,7 @@ const StyledButton = styled.button`
   }
 `;
 
-export default function Button({ children, disabled = false, ...props }) {
+export default function ButtonBox({ children, disabled = false, ...props }) {
   return (
     <StyledButton disabled={disabled} {...props}>
       {children}

@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import Profile from "../Profile";
 import InputTextArea from "../InputTextArea";
-import Button from "../Button";
+import ButtonBox from "../ButtonBox";
 
 // 공통 카드 스타일
 const Card = styled.div`
   width: 100%;
-  max-width: 480px;
   background: transparent;
   border-radius: 0;
   box-sizing: border-box;
@@ -55,7 +54,7 @@ export default function FeedCardAnswer({ state = "pending", answer = "답변 내
         <>
           <InputTextArea value={input} onChange={e => setInput(e.target.value)} placeholder="답변을 입력해주세요" />
           <StyledButtonWrap>
-            <Button style={{ width: "100%" }} disabled={!isButtonActive}>답변 완료</Button>
+            <ButtonBox style={{ width: "100%" }} disabled={!isButtonActive}>답변 완료</ButtonBox>
           </StyledButtonWrap>
         </>
       )}

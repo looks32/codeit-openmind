@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { useState } from "react";
 import FeedCardQuestion from "./FeedCardQuestion";
 import FeedCardAnswer from "./FeedCardAnswer";
+import ReactionButtons from "../ReactionButtons";
 
 // 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
 const Badge = styled.span`
@@ -44,7 +45,6 @@ const PopupItem = styled.div`
 
 const CardWrap = styled.div`
   width: 100%;
-  max-width: 600px;
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
@@ -74,36 +74,45 @@ const BottomRow = styled.div`
   padding: 16px 0;
 `;
 
-const LikeButton = styled.button`
-  background: none;
-  border: none;
-  color: #d9d9d9;
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  ${({ active }) => active && css`color: #1877F2;`}
-`;
-
-const DislikeButton = styled(LikeButton)`
-  ${({ active }) => active && css`color: #000000;`}
-`;
 
 export default function FeedCard({
-  questionProps = {state: "pending"},
+  questionProps = {},
   answerProps = {},
-  likes = "좋아요",
-  dislikes = "싫어요",
 }) {
   const [showPopup, setShowPopup] = useState(false);
   const [likeActive, setLikeActive] = useState(false);
   const [dislikeActive, setDislikeActive] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  const handleLike = () => {
+    if (likeActive) {
+      setLikeActive(false);
+      setLikeCount((c) => c - 1);
+    } else {
+      setLikeActive(true);
+      setLikeCount((c) => c + 1);
+      if (dislikeActive) setDislikeActive(false);
+    }
+  };
+
+  const handleDislike = () => {
+    setDislikeActive((v) => !v);
+    if (likeActive) {
+      setLikeActive(false);
+      setLikeCount((c) => c - 1);
+    }
+  };
 
   return (
     <CardWrap>
       <TopRow>
-        <Badge>{questionProps.state === "pending" ? <img src="Gray.svg" alt="Badge" /> : <img src="Brown.svg" alt="Badge" />}</Badge>
+        <Badge>
+          {answerProps.state === "pending" ? (
+            <img src="Gray.svg" alt="Badge" />
+          ) : (
+            <img src="Brown.svg" alt="Badge" />
+          )}
+        </Badge>
         <div style={{ position: "relative" }}>
           <MoreButton onClick={() => setShowPopup((v) => !v)}>⋯</MoreButton>
           {showPopup && (
@@ -118,24 +127,13 @@ export default function FeedCard({
       <FeedCardAnswer {...answerProps} />
       <Divider />
       <BottomRow>
-        <LikeButton
-          active={likeActive}
-          onClick={() => {
-            setLikeActive((v) => !v);
-            if (dislikeActive) setDislikeActive(false);
-          }}
-        >
-          <img src="thumbs-up.svg" alt="좋아요" /> {likes}
-        </LikeButton>
-        <DislikeButton
-          active={dislikeActive}
-          onClick={() => {
-            setDislikeActive((v) => !v);
-            if (likeActive) setLikeActive(false);
-          }}
-        >
-          <img src="thumbs-down.svg" alt="싫어요" /> {dislikes}
-        </DislikeButton>
+      <ReactionButtons
+        likeActive={likeActive}
+        dislikeActive={dislikeActive}
+        likeCount={likeCount}
+        onLike={handleLike}
+        onDislike={handleDislike}
+      />
       </BottomRow>
     </CardWrap>
   );

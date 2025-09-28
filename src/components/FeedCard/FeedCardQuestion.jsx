@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 const Card = styled.div`
   width: 100%;
-  max-width: 480px;
   background: transparent;
   border-radius: 0;
   box-sizing: border-box;
