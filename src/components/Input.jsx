@@ -16,11 +16,11 @@ const CommonInput = styled.input`
   }
 
   &::placeholder {
-    color: #818181;
+    color: #3242124;
   }
 `;
-function Input({ value, placeholder, name }) {
-  const [text, setText] = useState(value);
+function Input({ value, placeholder, name, bus }) {
+  const [text, setText2] = useState("동국이");
 
   const onChange = (e) => {
     setText(e.target.value);
