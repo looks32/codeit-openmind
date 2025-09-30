@@ -16,16 +16,17 @@ const CommonInput = styled.input`
   }
 
   &::placeholder {
-    color: #818182;
+    color: #818181;
   }
 `;
-function Input({ value, placeholder, name,bus }) {
+function Input({ value, placeholder, name }) {
   const [text, setText] = useState(value);
 
-  const onChange2 = (e) => {
+  const onChange = (e) => {
     setText(e.target.value);
   };
-   const onChange = (e) => {
+
+  const onChange2 = (e) => {
     setText(e.target.value);
   };
   return (
