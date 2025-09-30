@@ -91,10 +91,12 @@ const BaseButton = styled.button`
               border: 1px solid ${Color.Brown30};
               color: ${Color.Brown30};
             `
-            : `
+            :type === "question"
+            ? `
               background-color: ${Color.Brown30};
               border: none;
             `
+            :""
         };
     }
 `;
@@ -104,7 +106,7 @@ function Button({ width, height, type = "", children, size="" }) {
     type === "answer" ? "답변하러 가기" : type === "question" ? "질문 받기" : "";
 
   return (
-    <BaseButton width={width} height={height} type={type} size={size}>
+    <BaseButton width={width} height={height} type={type} size={size} disabled={false}>
         {children || defaultText}
 
         {iconTypes.includes(type) && (
