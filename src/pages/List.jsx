@@ -9,7 +9,7 @@ function List() {
   return (
     <div>
       <Dropdown label={label}>
-        {/* 부모는 onSelect로 label 상태를 갱신, Dropdwon이 주는 onClose()로 메뉴가 닫힘 */}
+        {/* 부모는 onSelect로 label 상태를 갱신, Dropdwon이 주는 onClose()로 메뉴가 닫히게 됨. */}
         <CustomMenu onSelect={(v) => setLabel(v)} />
       </Dropdown>
 
