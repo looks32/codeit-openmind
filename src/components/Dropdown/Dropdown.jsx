@@ -63,7 +63,7 @@ export default function Dropdown({
         </ArrowWrapper>
       </Toggle>
 
-      {open && children && ( // chiildren(부모요소가 전달한 메뉴)이 있을때만 박스 렌더
+      {open && children && ( // chiildren(부모요소가 전달한 메뉴)이 있을때만 박스 렌더함
                   <Menu role="listbox">
             {React.cloneElement(children, {
               onClose: () => {

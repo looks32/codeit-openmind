@@ -5,7 +5,7 @@ import styled from 'styled-components';
  props:
   - onSelect(value): 부모가 전달하는 선택 콜백 (필수는 아님)
   - onClose(): Dropdown이 주입해 주는 닫기 콜백 (있으면 호출)
-  - selected (optional): 현재 선택된 값(있으면 aria-selected 표시에 사용함)
+  - selected (optional): 현재 선택된 값(있으면 aria-selected 표시에 사용)
 */
 export default function CustomMenu({ onSelect, onClose, selected }) {
   function choose(value) {
