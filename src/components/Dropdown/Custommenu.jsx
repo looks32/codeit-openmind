@@ -48,7 +48,8 @@ export default function CustomMenu({ onSelect, onClose, selected }) {
 /* 예시 스타일 코드 (styled-components) */
 const MenuItem = styled.div`
   width: 100%;
-  padding: 8px 1px;
+  padding: 4px 0px;
+  font-size: 14px;
   text-align: center;
   color: #000000; /* 기본 검정 */
   cursor: pointer;
