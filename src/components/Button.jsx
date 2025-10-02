@@ -105,7 +105,7 @@ const InsertButton = styled.button`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-function Button({ width="", height="", type = "", children}) {
+function Button({ width="", height="", type = "", children , disabled}) {
     const defaultText = 
     type === "answer" ? "답변하러 가기" : type === "question" ? "질문 받기" : type === "insert" ? "질문 작성하기" : "";
 
@@ -116,7 +116,7 @@ return (
           {children || defaultText}
         </InsertButton>
       ) : (
-        <BaseButton width={width} height={height} type={type} disabled={false}>
+        <BaseButton width={width} height={height} type={type} disabled={disabled}>
           {children || defaultText}
 
           {iconTypes.includes(type) && (
