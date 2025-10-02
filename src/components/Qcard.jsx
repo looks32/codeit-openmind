@@ -1,11 +1,16 @@
 import styled from 'styled-components';
 import messages from '../assets/ico_messages.png';
 import CircleImage from '../components/Profile';
+import { Link } from 'react-router-dom';
 
 const Card = styled.div`
-  padding: 20px;
   border-radius: 16px;
   border: 1px solid #818181;
+
+  > a {
+    display: block;
+    padding: 20px;
+  }
 
   > strong {
     display: block;
@@ -26,17 +31,19 @@ const Card = styled.div`
   }
 `;
 
-function Qcard({ profile, nickName, question = 0 }) {
+function Qcard({ profile, nickName, question = 0, id }) {
   return (
     <Card>
-      <div className="profile">
-        <CircleImage src={profile} sizes="60px" />
-      </div>
-      <strong>{nickName}</strong>
-      <div className="question_area">
-        <span className="title">받은 질문</span>
-        <span>{question}개</span>
-      </div>
+      <Link to={`/post/${id}/answer`} title="홈으로">
+        <div className="profile">
+          <CircleImage src={profile} sizes="60px" />
+        </div>
+        <strong>{nickName}</strong>
+        <div className="question_area">
+          <span className="title">받은 질문</span>
+          <span>{question}개</span>
+        </div>
+      </Link>
     </Card>
   );
 }
