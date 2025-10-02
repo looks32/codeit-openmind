@@ -10,6 +10,7 @@ export default function Dropdown({
 }) {
   const [open, setOpen] = useState(false); // 드롭다운이 열려 있는지 (flase=닫힘)을 관리
   const ref = useRef(null); // 외부 클릭 감지 루트 DOM을 가리킴
+  const toggleRef = React.useRef(null);
 
   useEffect(() => { 
     function handleOutside(e) { // 이 함수는 클릭 대상이 ref.current(드롭 영역) 내부에 있지 않으면 외부 클릭으로 판단
@@ -62,10 +63,15 @@ export default function Dropdown({
         </ArrowWrapper>
       </Toggle>
 
-      {open && children && ( // chiildren(부모요소가 전달한 메뉴)이 있을때만 박스 렌더
-        <Menu role="listbox"> 
-          {children}
-        </Menu>
+      {open && children && ( // chiildren(부모요소가 전달한 메뉴)이 있을때만 박스 렌더함
+                  <Menu role="listbox">
+            {React.cloneElement(children, {
+              onClose: () => {
+                setOpen(false);
+                if (onOpenChange) onOpenChange(false);
+              },
+            })}
+          </Menu>
       )}
     </Wrap>
   );
@@ -84,7 +90,7 @@ const Toggle = styled.button`
   justify-content: center; /* 텍스트+아이콘 그룹 가운데 정렬 */
   gap: 4px;
   padding: 8px 12px;
-  min-width: 120px;
+  min-width: 100%;
   border-radius: 6px;
   background: #fff;
   cursor: pointer;
@@ -92,7 +98,7 @@ const Toggle = styled.button`
   color: ${props => (props.open ? '#000000' : '#818181')};
   transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s;
   &:hover {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 4px rgba(140,140,140,0.25);
   }
 `;
 
@@ -118,7 +124,7 @@ const Menu = styled.div`
   box-shadow: 0 4px 4px rgba(140,140,140,0.25);
   padding: 8px 0;
   z-index: 10;
-  min-width: 160px;
+  min-width: 100%;
 
   display: flex;
   flex-direction: column;
