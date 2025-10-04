@@ -1,8 +1,8 @@
-import styled, { css } from "styled-components";
-import { useState } from "react";
-import FeedCardQuestion from "./FeedCardQuestion";
-import FeedCardAnswer from "./FeedCardAnswer";
-import ReactionButtons from "../ReactionButtons";
+import styled, { css } from 'styled-components';
+import { useState } from 'react';
+import FeedCardQuestion from './FeedCardQuestion';
+import FeedCardAnswer from './FeedCardAnswer';
+import Reaction from '../Reaction';
 
 // 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
 const Badge = styled.span`
@@ -29,7 +29,7 @@ const Popup = styled.div`
   background: #fff;
   border: 1px solid #eee;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   z-index: 10;
   min-width: 100px;
 `;
@@ -47,7 +47,7 @@ const CardWrap = styled.div`
   width: 100%;
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 32px 32px 0 32px;
   margin: 0 auto 32px auto;
   box-sizing: border-box;
@@ -74,51 +74,34 @@ const BottomRow = styled.div`
   padding: 16px 0;
 `;
 
-
 export default function FeedCard({
+  subjectId,
   questionProps = {},
   answerProps = {},
+  reactionProps = {},
 }) {
   const [showPopup, setShowPopup] = useState(false);
-  const [likeActive, setLikeActive] = useState(false);
-  const [dislikeActive, setDislikeActive] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
-
-  const handleLike = () => {
-    if (likeActive) {
-      setLikeActive(false);
-      setLikeCount((c) => c - 1);
-    } else {
-      setLikeActive(true);
-      setLikeCount((c) => c + 1);
-      if (dislikeActive) setDislikeActive(false);
-    }
-  };
-
-  const handleDislike = () => {
-    setDislikeActive((v) => !v);
-    if (likeActive) {
-      setLikeActive(false);
-      setLikeCount((c) => c - 1);
-    }
-  };
 
   return (
     <CardWrap>
       <TopRow>
         <Badge>
-          {answerProps.state === "pending" ? (
-            <img src="Gray.svg" alt="Badge" />
+          {answerProps.state === 'pending' ? (
+            <img src="/Gray.svg" alt="Badge" />
           ) : (
-            <img src="Brown.svg" alt="Badge" />
+            <img src="/Brown.svg" alt="Badge" />
           )}
         </Badge>
-        <div style={{ position: "relative" }}>
+        <div style={{ position: 'relative' }}>
           <MoreButton onClick={() => setShowPopup((v) => !v)}>⋯</MoreButton>
           {showPopup && (
             <Popup>
-              <PopupItem onClick={() => setShowPopup(false)}>삭제하기</PopupItem>
-              <PopupItem onClick={() => setShowPopup(false)}>수정하기</PopupItem>
+              <PopupItem onClick={() => setShowPopup(false)}>
+                삭제하기
+              </PopupItem>
+              <PopupItem onClick={() => setShowPopup(false)}>
+                수정하기
+              </PopupItem>
             </Popup>
           )}
         </div>
@@ -127,13 +110,7 @@ export default function FeedCard({
       <FeedCardAnswer {...answerProps} />
       <Divider />
       <BottomRow>
-      <ReactionButtons
-        likeActive={likeActive}
-        dislikeActive={dislikeActive}
-        likeCount={likeCount}
-        onLike={handleLike}
-        onDislike={handleDislike}
-      />
+        <Reaction {...reactionProps} />
       </BottomRow>
     </CardWrap>
   );
