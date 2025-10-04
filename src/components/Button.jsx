@@ -1,100 +1,97 @@
-import styled, { css } from "styled-components";
-import "./reset.css"
-const Sizes ={
-    smallHeight:34,
-    answerSmall:149,
-    questionSmall:120,
-}
+import styled, { css } from 'styled-components';
+const Sizes = {
+  smallHeight: 34,
+  answerSmall: 149,
+  questionSmall: 120,
+};
 
-const iconTypes = ["answer", "question"];
-
+const iconTypes = ['answer', 'question'];
 
 const ArrowIcon = styled.span`
-    width: 18px;
-    height: 18px;   
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    svg {
-      width: 100%;
-      height: 100%;
-      fill: currentColor;
-    }
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
 `;
 
-
 const types = {
-    answer: css`
-        width: ${({ width }) => Sizes[width] ?? "192"}px;
-        background-color: var(--Brown10);
-        border: 1px solid var(--Brown40);
-        color: var(--Brown40);
-        gap:${({ width }) => (width ? "4px" : "8px")};
-        
+  answer: css`
+    width: ${({ width }) => Sizes[width] ?? '192'}px;
+    background-color: var(--Brown10);
+    border: 1px solid var(--Brown40);
+    color: var(--Brown40);
+    gap: ${({ width }) => (width ? '4px' : '8px')};
 
-        &:hover {
-          border: 2px solid var(--Brown40);
-        }
-        &:active {
-          background-color: var(--Brown20);
-        }
-    `,
-    // 질문 
-    question: css`
-        width: ${({ width }) => Sizes[width] ?? "160"}px;
-        background-color: var(--Brown40);
-        color: var(--Gray10);
-        border: 2px solid transparent;
-        gap:${({ width }) => (width ? "4px" : "10px")};
+    &:hover {
+      border: 2px solid var(--Brown40);
+    }
+    &:active {
+      background-color: var(--Brown20);
+    }
+  `,
+  // 질문
+  question: css`
+    width: ${({ width }) => Sizes[width] ?? '160'}px;
+    background-color: var(--Brown40);
+    color: var(--Gray10);
+    border: 2px solid transparent;
+    gap: ${({ width }) => (width ? '4px' : '10px')};
 
-        &:hover {
-          border: 2px solid var(--Brown50);
-        }
-        &:active {
-          background-color: var(--Brown50);
-        }
-    `,
+    &:hover {
+      border: 2px solid var(--Brown50);
+    }
+    &:active {
+      background-color: var(--Brown50);
+    }
+  `,
 };
 
 const BaseButton = styled.button`
-    height: ${({ height }) => Sizes[height] ?? "46"}px;
-    padding:0;
-    padding-left: ${({ width }) => (width ? "12px" : "24px")};
-    border-radius: 8px;
-    line-height: 22px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition:border 0.2s;
+  height: ${({ height }) => Sizes[height] ?? '46'}px;
+  padding: 0;
+  padding-left: ${({ width }) => (width ? '12px' : '24px')};
+  border-radius: 8px;
+  line-height: 22px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border 0.2s;
 
-    ${({ type }) => types[type] || types.answer}
-    
-// inactivate
+  ${({ type }) => types[type] || types.answer}
+
+  // inactivate
     &:disabled {
-        cursor: not-allowed;
-        ${({ type }) =>
-            type === "answer"
-            ? `
+    cursor: not-allowed;
+    ${({ type }) =>
+      type === 'answer'
+        ? `
               background-color: var(--Brown10);
               border: 1px solid var(--Brown30);
               color: var(--Brown30);
             `
-            :type === "question"
-            ? `
+        : type === 'question'
+          ? `
               background-color: var(--Brown30);
               border: none;
             `
-            :""
-        };
-    }
+          : ''};
+  }
 `;
 // insert
 const InsertButton = styled.button`
-  width: 208px;
-  height: 54px;
-  padding:0;
+  width: ${({ width }) =>
+    typeof width === 'number' ? `${width}px` : width || '208px'};
+  height: ${({ height }) =>
+    typeof height === 'number' ? `${height}px` : height || '54px'};
+  padding: 0;
   background-color: var(--Brown40);
   color: var(--Gray10);
   border-radius: 9999px;
@@ -105,18 +102,29 @@ const InsertButton = styled.button`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-function Button({ width="", height="", type = "", children , disabled}) {
-    const defaultText = 
-    type === "answer" ? "답변하러 가기" : type === "question" ? "질문 받기" : type === "insert" ? "질문 작성하기" : "";
+function Button({ width = '', height = '', type = '', children, disabled }) {
+  const defaultText =
+    type === 'answer'
+      ? '답변하러 가기'
+      : type === 'question'
+        ? '질문 받기'
+        : type === 'insert'
+          ? '질문 작성하기'
+          : '';
 
-return (
+  return (
     <div>
-      {type === "insert" ? (
-        <InsertButton>
+      {type === 'insert' ? (
+        <InsertButton width={width} height={height} disabled={disabled}>
           {children || defaultText}
         </InsertButton>
       ) : (
-        <BaseButton width={width} height={height} type={type} disabled={disabled}>
+        <BaseButton
+          width={width}
+          height={height}
+          type={type}
+          disabled={disabled}
+        >
           {children || defaultText}
 
           {iconTypes.includes(type) && (

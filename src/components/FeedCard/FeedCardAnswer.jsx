@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import Profile from "../Profile";
-import InputTextArea from "../InputTextArea";
-import ButtonBox from "../ButtonBox";
+import styled from 'styled-components';
+import Profile from '../Profile';
+import InputTextArea from '../InputTextArea';
+import ButtonBox from '../ButtonBox';
 
 // 공통 카드 스타일
 const Card = styled.div`
@@ -37,32 +37,53 @@ const StyledButtonWrap = styled.div`
   margin-top: 8px;
 `;
 
-import { useState } from "react";
+import { useState } from 'react';
+import CircleImage from '../Profile';
 
-export default function FeedCardAnswer({ state = "pending", answer = "답변 내용", userName = "아초는고양이", timeAgo = "2주 전" }) {
+export default function FeedCardAnswer({
+  state = 'pending',
+  answer = '답변 내용',
+  userImage,
+  userName = '아초는고양이',
+  timeAgo = '2주 전',
+}) {
   // state: "pending" | "answered" | "rejected"
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const isButtonActive = input.trim().length > 0;
   return (
     <Card>
       <ProfileRow>
-        <Profile />
+        <CircleImage src={userImage} sizes="48px" />
         <UserName>{userName}</UserName>
-        {state !== "pending" && <TimeAgo>{typeof timeAgo === "string" ? timeAgo : timeAgo?.text || ""}</TimeAgo>}
+        {state !== 'pending' && (
+          <TimeAgo>
+            {typeof timeAgo === 'string' ? timeAgo : timeAgo?.text || ''}
+          </TimeAgo>
+        )}
       </ProfileRow>
-      {state === "pending" && (
+      {state === 'pending' && (
         <>
-          <InputTextArea value={input} onChange={e => setInput(e.target.value)} placeholder="답변을 입력해주세요" />
+          <InputTextArea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="답변을 입력해주세요"
+          />
           <StyledButtonWrap>
-            <ButtonBox style={{ width: "100%" }} disabled={!isButtonActive}>답변 완료</ButtonBox>
+            <ButtonBox style={{ width: '100%' }} disabled={!isButtonActive}>
+              답변 완료
+            </ButtonBox>
           </StyledButtonWrap>
         </>
       )}
-      {state === "answered" && (
-        <div style={{ whiteSpace: "pre-line", color: "#222", fontSize: "16px" }}>{answer}</div>
+      {state === 'answered' && (
+        <div
+          style={{ whiteSpace: 'pre-line', color: '#222', fontSize: '16px' }}
+        >
+          {answer}
+        </div>
       )}
-      {state === "rejected" && (
-        <div style={{ color: "red", fontSize: "16px" }}>답변 거절</div>
+      {state === 'rejected' && (
+        <div style={{ color: 'red', fontSize: '16px' }}>답변 거절</div>
       )}
     </Card>
   );
