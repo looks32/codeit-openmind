@@ -79,8 +79,16 @@ export default function FeedCard({
   questionProps = {},
   answerProps = {},
   reactionProps = {},
+  hideAnswer = false,
 }) {
   const [showPopup, setShowPopup] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [localAnswer, setLocalAnswer] = useState(answerProps.answer || '');
+
+  const handleSave = (next) => {
+    setLocalAnswer(next);
+    setIsEditing(false);
+  };
 
   return (
     <CardWrap>
@@ -99,15 +107,30 @@ export default function FeedCard({
               <PopupItem onClick={() => setShowPopup(false)}>
                 삭제하기
               </PopupItem>
-              <PopupItem onClick={() => setShowPopup(false)}>
-                수정하기
-              </PopupItem>
+              {!isEditing && answerProps.state === 'answered' && (
+                <PopupItem
+                  onClick={() => {
+                    setIsEditing(true);
+                    setShowPopup(false);
+                  }}
+                >
+                  수정하기
+                </PopupItem>
+              )}
             </Popup>
           )}
         </div>
       </TopRow>
       <FeedCardQuestion {...questionProps} />
-      <FeedCardAnswer {...answerProps} />
+      {!hideAnswer && (
+        <FeedCardAnswer
+          {...answerProps}
+          answer={localAnswer}
+          editing={isEditing}
+          onSave={handleSave}
+          onCancel={() => setIsEditing(false)}
+        />
+      )}
       <Divider />
       <BottomRow>
         <Reaction {...reactionProps} />

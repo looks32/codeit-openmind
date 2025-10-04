@@ -2,9 +2,10 @@ import FeedCardGroup from '../components/FeedCard/FeedCardGroup';
 import styled from 'styled-components';
 import CircleImage from '../components/Profile';
 import Button from '../components/Button';
+import { useState } from 'react';
 
 function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
-  const items = [
+  const [items, setItems] = useState([
     {
       questionProps: {
         question: '좋아하는 동물?',
@@ -45,7 +46,14 @@ function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
       },
       answerProps: { state: 'rejected', userName, timeAgo: '2주전' },
     },
-  ];
+    {
+      questionProps: {
+        question: '좋아하는 동물은?',
+        timeAgo: '2주전',
+        state: 'pending',
+      },
+    },
+  ]);
 
   return (
     <div>
@@ -60,11 +68,16 @@ function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
 
       <Content>
         <RightBar>
-          <Button width="100px" height="35px" type="insert">
-            삭제하기
+          <Button
+            width="100px"
+            height="35px"
+            type="insert"
+            onClick={() => setItems([])}
+          >
+            전체 삭제하기
           </Button>
         </RightBar>
-        <FeedCardGroup items={items} />
+        <FeedCardGroup items={items} count={items.length} />
       </Content>
     </div>
   );
