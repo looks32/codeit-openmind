@@ -44,6 +44,8 @@ function Reaction({
   deLikeActive = false,
   likeNumber = 0,
   deLikeNumber = 0,
+  likeClick,
+  deLikeClick,
 }) {
   const [isLikeActive, setIsLikeActive] = useState(likeActive);
   const [isDeLikeActive, setDeIsLikeActive] = useState(deLikeActive);
@@ -57,6 +59,10 @@ function Reaction({
       setLikeEa(Number(likeEa) + 1);
     }
     setIsLikeActive(!isLikeActive);
+
+    if (likeClick) {
+      likeClick();
+    }
   };
 
   const onClickDeLike = () => {
@@ -66,6 +72,10 @@ function Reaction({
       setDeLikeEa(Number(deLikeEa) + 1);
     }
     setDeIsLikeActive(!isDeLikeActive);
+
+    if (deLikeClick) {
+      deLikeClick();
+    }
   };
 
   return (
