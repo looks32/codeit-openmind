@@ -4,6 +4,7 @@ import likeActiveIco from '../assets/ico_thumbs_up_active.png';
 import deLikeIco from '../assets/ico_thumbs_down.png';
 import deLikeActiveIco from '../assets/ico_thumbs_down_active.png';
 import { useState } from 'react';
+import { postReaction } from '../utill/api';
 
 const ReactionArea = styled.div`
   display: flex;
@@ -40,6 +41,7 @@ const ReactionArea = styled.div`
 `;
 
 function Reaction({
+  questionId,
   likeActive = false,
   deLikeActive = false,
   likeNumber = 0,
@@ -51,30 +53,33 @@ function Reaction({
   const [isDeLikeActive, setDeIsLikeActive] = useState(deLikeActive);
   const [likeEa, setLikeEa] = useState(likeNumber);
   const [deLikeEa, setDeLikeEa] = useState(deLikeNumber);
+  const [busy, setBusy] = useState(false);
 
-  const onClickLike = () => {
-    if (isLikeActive) {
-      setLikeEa(Number(likeEa) - 1);
-    } else {
-      setLikeEa(Number(likeEa) + 1);
-    }
+  const onClickLike = async () => {
+    if (busy) return;
     setIsLikeActive(!isLikeActive);
-
-    if (likeClick) {
-      likeClick();
+    setBusy(true);
+    try {
+      if (isLikeActive) await postReaction(questionId, 'like');
+      setLikeEa(isLikeActive ? likeEa - 1 : likeEa + 1);
+    } catch (e) {
+      alert(`좋아요 실패: ${e?.message || ''}`);
+    } finally {
+      setBusy(false);
     }
   };
 
-  const onClickDeLike = () => {
-    if (isDeLikeActive) {
-      setDeLikeEa(Number(deLikeEa) - 1);
-    } else {
-      setDeLikeEa(Number(deLikeEa) + 1);
-    }
+  const onClickDeLike = async () => {
+    if (busy) return;
     setDeIsLikeActive(!isDeLikeActive);
-
-    if (deLikeClick) {
-      deLikeClick();
+    setBusy(true);
+    try {
+      if (isDeLikeActive) await postReaction(questionId, 'dislike');
+      setDeLikeEa(isDeLikeActive ? deLikeEa - 1 : deLikeEa + 1);
+    } catch (e) {
+      alert(`싫어요 실패: ${e?.message || ''}`);
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -83,6 +88,7 @@ function Reaction({
       <button
         className={`like ${isLikeActive ? 'active' : ''}`}
         onClick={onClickLike}
+        disabled={busy}
       >
         <img src={isLikeActive ? likeActiveIco : likeIco} alt="좋아요 아이콘" />
         좋아요 {likeEa <= 0 ? '' : likeEa}
@@ -90,6 +96,7 @@ function Reaction({
       <button
         className={isDeLikeActive ? 'active' : ''}
         onClick={onClickDeLike}
+        disabled={busy}
       >
         <img
           src={isDeLikeActive ? deLikeActiveIco : deLikeIco}

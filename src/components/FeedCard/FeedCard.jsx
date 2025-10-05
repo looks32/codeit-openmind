@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FeedCardQuestion from './FeedCardQuestion';
 import FeedCardAnswer from './FeedCardAnswer';
 import Reaction from '../Reaction';
+import { deleteQuestion } from '../../utill/api';
 
 // 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
 const Badge = styled.span`
@@ -80,10 +81,18 @@ export default function FeedCard({
   answerProps = {},
   reactionProps = {},
   hideAnswer = false,
+  onDeleted = () => {},
 }) {
   const [showPopup, setShowPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [localAnswer, setLocalAnswer] = useState(answerProps.answer || '');
+  const [deleting, setDeleting] = useState(false);
+  // 답변 상태를 로컬로 보관해 즉시 UI 반영
+  const [answerState, setAnswerState] = useState(answerProps.state);
+
+  useEffect(() => {
+    setAnswerState(answerProps.state);
+  }, [answerProps.state]);
 
   const handleSave = (next) => {
     setLocalAnswer(next);
@@ -94,20 +103,39 @@ export default function FeedCard({
     <CardWrap>
       <TopRow>
         <Badge>
-          {answerProps.state === 'pending' ? (
+          {answerState === 'pending' ? (
             <img src="/Gray.svg" alt="Badge" />
           ) : (
             <img src="/Brown.svg" alt="Badge" />
           )}
         </Badge>
         <div style={{ position: 'relative' }}>
-          <MoreButton onClick={() => setShowPopup((v) => !v)}>⋯</MoreButton>
+          <MoreButton
+            disabled={deleting}
+            onClick={() => setShowPopup((v) => !v)}
+          >
+            ⋯
+          </MoreButton>
           {showPopup && (
             <Popup>
-              <PopupItem onClick={() => setShowPopup(false)}>
+              <PopupItem
+                onClick={async () => {
+                  setShowPopup(false);
+                  if (deleting) return;
+                  try {
+                    setDeleting(true);
+                    await deleteQuestion(questionProps.id);
+                    onDeleted?.(questionProps.id);
+                  } catch (e) {
+                    alert(`삭제 실패: ${e?.message || ''}`);
+                  } finally {
+                    setDeleting(false);
+                  }
+                }}
+              >
                 삭제하기
               </PopupItem>
-              {!isEditing && answerProps.state === 'answered' && (
+              {!isEditing && answerState === 'answered' && (
                 <PopupItem
                   onClick={() => {
                     setIsEditing(true);
@@ -125,10 +153,13 @@ export default function FeedCard({
       {!hideAnswer && (
         <FeedCardAnswer
           {...answerProps}
+          questionId={questionProps.id}
+          answerId={answerProps.answerId}
           answer={localAnswer}
           editing={isEditing}
           onSave={handleSave}
           onCancel={() => setIsEditing(false)}
+          onStateChange={(s) => setAnswerState(s)}
         />
       )}
       <Divider />
