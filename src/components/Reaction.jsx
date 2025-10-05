@@ -60,7 +60,7 @@ function Reaction({
     setIsLikeActive(!isLikeActive);
     setBusy(true);
     try {
-      if (isLikeActive) await postReaction(questionId, 'like');
+      if (!isLikeActive) await postReaction(questionId, 'like');
       setLikeEa(isLikeActive ? likeEa - 1 : likeEa + 1);
     } catch (e) {
       alert(`좋아요 실패: ${e?.message || ''}`);
@@ -74,7 +74,7 @@ function Reaction({
     setDeIsLikeActive(!isDeLikeActive);
     setBusy(true);
     try {
-      if (isDeLikeActive) await postReaction(questionId, 'dislike');
+      if (!isDeLikeActive) await postReaction(questionId, 'dislike');
       setDeLikeEa(isDeLikeActive ? deLikeEa - 1 : deLikeEa + 1);
     } catch (e) {
       alert(`싫어요 실패: ${e?.message || ''}`);
