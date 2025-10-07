@@ -12,7 +12,7 @@ const Card = styled.div`
     padding: 20px;
   }
 
-  > strong {
+  strong {
     display: block;
     margin-top: 12px;
     font-size: 20px;
@@ -34,7 +34,7 @@ const Card = styled.div`
 function Qcard({ profile, nickName, question = 0, id }) {
   return (
     <Card>
-      <Link to={`/post/${id}/answer`} title="홈으로">
+      <Link to={`/post/${id}`} title={`${nickName}님의 질문으로 이동`}>
         <div className="profile">
           <CircleImage src={profile} sizes="60px" />
         </div>
