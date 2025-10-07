@@ -102,7 +102,14 @@ const InsertButton = styled.button`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-function Button({ width = '', height = '', type = '', children, disabled }) {
+function Button({
+  width = '',
+  height = '',
+  type = '',
+  children,
+  disabled,
+  onClick,
+}) {
   const defaultText =
     type === 'answer'
       ? '답변하러 가기'
@@ -115,7 +122,12 @@ function Button({ width = '', height = '', type = '', children, disabled }) {
   return (
     <div>
       {type === 'insert' ? (
-        <InsertButton width={width} height={height} disabled={disabled}>
+        <InsertButton
+          width={width}
+          height={height}
+          disabled={disabled}
+          onClick={onClick}
+        >
           {children || defaultText}
         </InsertButton>
       ) : (
