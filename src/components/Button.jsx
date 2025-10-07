@@ -86,7 +86,7 @@ const BaseButton = styled.button`
   }
 `;
 // insert
-const InsertButton = styled.button`
+export const InsertButton = styled.button`
   width: ${({ width }) =>
     typeof width === 'number' ? `${width}px` : width || '208px'};
   height: ${({ height }) =>
