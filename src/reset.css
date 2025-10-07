@@ -148,3 +148,7 @@ a {
   color: #000;
   text-decoration: none;
 }
+/* 모달 */
+body.modal-open {
+  overflow: hidden;
+}
