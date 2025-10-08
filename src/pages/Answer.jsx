@@ -9,6 +9,7 @@ import { deleteQuestionsBySubject } from '../utill/api';
 function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
   const [deleting, setDeleting] = useState(false); // 전체 삭제하기 버튼 상태
+  const [questions, setQuestions] = useState([]);
 
   const [items, setItems] = useState([
     {
