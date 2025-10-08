@@ -2,9 +2,14 @@ import FeedCardGroup from '../components/FeedCard/FeedCardGroup';
 import styled from 'styled-components';
 import CircleImage from '../components/Profile';
 import Button from '../components/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { deleteQuestionsBySubject } from '../utill/api';
 
 function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
+  const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
+  const [deleting, setDeleting] = useState(false); // 전체 삭제하기 버튼 상태
+
   const [items, setItems] = useState([
     {
       questionProps: {
@@ -69,10 +74,22 @@ function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
       <Content>
         <RightBar>
           <Button
-            width="100px"
+            width="120px"
             height="35px"
             type="insert"
-            onClick={() => setItems([])}
+            disabled={deleting}
+            onClick={async () => {
+              if (deleting) return;
+              try {
+                setDeleting(true);
+                await deleteQuestionsBySubject(subjectId); // 전체 삭제하기 API 호출
+                setQuestions([]);
+              } catch (e) {
+                alert(`삭제 실패: ${e?.message || ''}`);
+              } finally {
+                setDeleting(false);
+              }
+            }}
           >
             전체 삭제하기
           </Button>
@@ -107,6 +124,7 @@ const Banner = styled.div`
 
 const Logo = styled.img`
   margin-top: 50px;
+  margin-bottom: 12px;
   height: 67px; /* 필요 시 조절 */
   width: auto;
 `;
