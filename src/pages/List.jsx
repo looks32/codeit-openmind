@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Qcard from '../components/Qcard';
 import Dropdown from '../components/Dropdown/Dropdown';
 import CustomMenu from '../components/Dropdown/Custommenu';
@@ -130,6 +130,31 @@ const PagenationWrap = styled.div`
 
 function List() {
   const [label, setLabel] = useState('이름순');
+  const [list, setList] = useState([]);
+
+  async function getData() {
+    try {
+      const response = await fetch(
+        'https://openmind-api.vercel.app/19-9/subjects/'
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('에러 발생:', error);
+    }
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await getData();
+      // console.log(data);
+      // console.log(data.previous);
+      // console.log(data.next);
+      // console.log(data.count);
+      setList(data.results || []);
+    }
+    fetchData();
+  }, []);
 
   return (
     <ListWrap>
@@ -151,21 +176,18 @@ function List() {
         </div>
 
         <QList>
-          <li>
-            <Qcard />
-          </li>
-          <li>
-            <Qcard />
-          </li>
-          <li>
-            <Qcard />
-          </li>
-          <li>
-            <Qcard />
-          </li>
-          <li>
-            <Qcard />
-          </li>
+          {list.map((item) => {
+            return (
+              <li key={item.id}>
+                <Qcard
+                  profile={item.imageSource}
+                  nickName={item.name}
+                  question={item.questionCount}
+                  id={item.id}
+                />
+              </li>
+            );
+          })}
         </QList>
 
         <PagenationWrap>페이지네이션</PagenationWrap>
