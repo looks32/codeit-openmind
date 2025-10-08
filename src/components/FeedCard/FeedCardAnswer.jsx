@@ -3,6 +3,7 @@ import InputTextArea from '../InputTextArea';
 import ButtonBox from '../ButtonBox';
 import { useState, useEffect } from 'react';
 import CircleImage from '../Profile';
+import { postAnswer, patchAnswer } from '../../utill/api';
 
 // 공통 카드 스타일
 const Card = styled.div`
@@ -54,24 +55,34 @@ export default function FeedCardAnswer({
   onStateChange,
 }) {
   const [input, setInput] = useState('');
+  // post 성공 시 로컬에서 상태를 answered로 바꿔 UI를 전환
+  const [currentState, setCurrentState] = useState(state);
+  // 새로 생성된 답변의 id를 보관해 이후 수정 시 사용
+  const [currentAnswerId, setCurrentAnswerId] = useState(answerId);
 
   useEffect(() => {
-    // 편집 모드로 들어갈 때 기존 답변을 입력창에 채워줌
+    setCurrentState(state);
+  }, [state]);
+
+  useEffect(() => {
+    setCurrentAnswerId(answerId);
+  }, [answerId]);
+
+  useEffect(() => {
     if (editing) setInput(answer || '');
   }, [editing, answer]);
 
-  const isRejected = state === 'rejected';
-  const canEdit = !isRejected && (state === 'pending' || editing);
+  const isRejected = currentState === 'rejected';
+  const canEdit = !isRejected && (currentState === 'pending' || editing);
   const isButtonActive = input.trim().length > 0;
-
   return (
     <Card>
       <ProfileRow>
         <CircleImage src={userImage} sizes="48px" />
         <UserName>{userName}</UserName>
-        {state !== 'pending' && !editing && (
+        {currentState !== 'pending' && !editing && (
           <TimeAgo>
-            {typeof timeAgo === 'string' ? timeAgo : timeAgo?.text || ''}
+            {typeof timeAgo === 'string' && timeAgo ? timeAgo : '방금'}
           </TimeAgo>
         )}
       </ProfileRow>
@@ -83,30 +94,47 @@ export default function FeedCardAnswer({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={
-              state === 'pending' ? '답변을 입력해주세요' : '답변을 수정하세요'
+              currentState === 'pending'
+                ? '답변을 입력해주세요'
+                : '답변을 수정하세요'
             }
           />
           <StyledButtonWrap>
             <ButtonBox
               style={{ width: '100%' }}
               disabled={!isButtonActive}
-              onClick={() => {
+              onClick={async () => {
                 if (!isButtonActive) return;
-                if (onSave) onSave(input.trim());
+                const content = input.trim();
+                try {
+                  if (currentState === 'pending') {
+                    const created = await postAnswer(questionId, content);
+                    // 생성된 답변 ID 저장 후 상태 전환
+                    setCurrentAnswerId(created?.id);
+                    setCurrentState('answered');
+                    onStateChange && onStateChange('answered');
+                  } else if (editing) {
+                    await patchAnswer(currentAnswerId, content);
+                    onStateChange && onStateChange('answered');
+                  }
+                  onSave && onSave(content);
+                } catch (e) {
+                  alert(`처리 실패: ${e?.message || ''}`);
+                }
               }}
             >
-              {state === 'pending'
+              {currentState === 'pending'
                 ? '답변 완료'
                 : editing
                   ? '수정 완료'
-                  : '수정 완료'}
+                  : '수정 중...'}
             </ButtonBox>
           </StyledButtonWrap>
         </>
       )}
 
       {/* 답변 완료 표시 (편집 모드가 아닐 때만) */}
-      {state === 'answered' && !editing && (
+      {currentState === 'answered' && !editing && (
         <div
           style={{
             whiteSpace: 'pre-line',
