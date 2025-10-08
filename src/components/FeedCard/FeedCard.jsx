@@ -123,7 +123,7 @@ export default function FeedCard({
         </div>
       </TopRow>
       <FeedCardQuestion {...questionProps} />
-      {!hideAnswer && (
+      {!(hideAnswer && answerProps.state === 'pending') && (
         <FeedCardAnswer
           {...answerProps}
           answer={localAnswer}
