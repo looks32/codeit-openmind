@@ -40,9 +40,8 @@ const Empty = styled.img`
   margin: auto;
 `;
 
-// items: [{ id?, subjectId?, questionProps, answerProps, reactionProps, hideAnswer }]
-export default function FeedCardGroup({ items, count }) {
-  if (!items?.length) {
+export default function FeedCardGroup({ questions = [], onChange }) {
+  if (!questions?.length) {
     return (
       <GroupWrap>
         <Banner>
@@ -58,17 +57,17 @@ export default function FeedCardGroup({ items, count }) {
     <GroupWrap>
       <Banner>
         <img src="/Messages.svg" alt="Messages" />
-        {count}개의 질문이 있습니다
+        {questions.length}개의 질문이 있습니다
       </Banner>
 
-      {items.map((item, idx) => (
+      {questions.map((q) => (
         <FeedCard
-          key={item.id ?? idx}
-          subjectId={item.subjectId}
-          questionProps={item.questionProps}
-          answerProps={item.answerProps}
-          reactionProps={item.reactionProps}
-          hideAnswer={item.hideAnswer}
+          key={q.id}
+          subjectId={q.subjectId}
+          questionProps={q.questionProps}
+          answerProps={q.answerProps}
+          reactionProps={q.reactionProps}
+          hideAnswer={q.hideAnswer}
         />
       ))}
     </GroupWrap>
