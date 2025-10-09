@@ -41,6 +41,9 @@ const Empty = styled.img`
 `;
 
 export default function FeedCardGroup({ questions = [], onChange }) {
+  const handleDeleted = (id) => {
+    onChange?.(questions.filter((q) => q.id !== id));
+  };
   if (!questions?.length) {
     return (
       <GroupWrap>
@@ -68,6 +71,7 @@ export default function FeedCardGroup({ questions = [], onChange }) {
           answerProps={q.answerProps}
           reactionProps={q.reactionProps}
           hideAnswer={q.hideAnswer}
+          onDeleted={handleDeleted}
         />
       ))}
     </GroupWrap>

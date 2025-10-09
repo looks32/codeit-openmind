@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { deleteQuestionsBySubject, postQuestion } from '../utill/api';
 import { loadQuestionsBySubject as loadData } from '../utill/load';
+import { formatRelativeTime } from '../utill/time';
 
 function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
@@ -14,6 +15,7 @@ function Answer() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [creating, setCreating] = useState(false); // 질문 만들기 버튼 상태
 
   useEffect(() => {
     let mounted = true;
@@ -74,6 +76,45 @@ function Answer() {
             }}
           >
             전체 삭제하기
+          </Button>
+          {/* 질문 만들기 (테스트용 임시 버튼) */}
+          <Button
+            type="insert"
+            disabled={creating}
+            onClick={async () => {
+              if (creating) return;
+              try {
+                setCreating(true);
+                const created = await postQuestion(subjectId, '만들어진 질문d');
+                const newQuestion = {
+                  id: created.id,
+                  questionProps: {
+                    id: created.id,
+                    question: created.content,
+                    timeAgo: formatRelativeTime(created.createdAt),
+                  },
+                  answerProps: {
+                    state: 'pending',
+                    userName: subject?.name,
+                    userImage: subject?.imageSource,
+                    timeAgo: null,
+                    answer: '',
+                  },
+                  reactionProps: {
+                    questionId: created.id,
+                    likeNumber: created.like ?? 0,
+                    deLikeNumber: created.dislike ?? 0,
+                  },
+                };
+                setQuestions((prev) => [newQuestion, ...prev]);
+              } catch (e) {
+                alert(`질문 생성 실패: ${e?.message || ''}`);
+              } finally {
+                setCreating(false);
+              }
+            }}
+          >
+            질문 만들기
           </Button>
         </RightBar>
         <FeedCardGroup
