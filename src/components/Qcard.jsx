@@ -10,6 +10,8 @@ const Card = styled.div`
   > a {
     display: block;
     padding: 20px;
+    border-radius: 16px;
+    background-color: var(--Gray10);
   }
 
   strong {

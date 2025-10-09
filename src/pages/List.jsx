@@ -5,12 +5,12 @@ import Dropdown from '../components/Dropdown/Dropdown';
 import CustomMenu from '../components/Dropdown/Custommenu';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import Pagenation from '../components/Pagenation';
 
 const ListWrap = styled.div`
   width: 100%;
   max-width: 950px;
   margin: 40px auto 0;
-  background-color: pink;
 
   /* 테블릿 */
   @media (max-width: 1199px) {
@@ -25,7 +25,6 @@ const ListWrap = styled.div`
 `;
 
 const ListHeader = styled.div`
-  background-color: lightblue;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,6 +58,12 @@ const ListHeader = styled.div`
       align-items: center;
       justify-content: center;
       margin-top: 20px;
+    }
+
+    button {
+      width: 127px;
+      height: 34px;
+      padding-left: 0;
     }
   }
 `;
@@ -114,12 +119,28 @@ const QList = styled.ol`
   @media (max-width: 667px) {
     li {
       width: calc((100% / 2) - 10px);
+
+      a {
+        padding: 16px;
+      }
+
+      strong {
+        font-size: 18px;
+      }
+
+      span {
+        font-size: 14px;
+      }
+
+      img {
+        width: 48px;
+        height: 48px;
+      }
     }
   }
 `;
 
 const PagenationWrap = styled.div`
-  background-color: green;
   margin-top: 40px;
 
   /* 모바일 */
@@ -131,9 +152,11 @@ const PagenationWrap = styled.div`
 function List() {
   const [label, setLabel] = useState('이름순');
   const [list, setList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   async function getData() {
     try {
+      setLoading(true);
       const response = await fetch(
         'https://openmind-api.vercel.app/19-9/subjects/'
       );
@@ -141,6 +164,8 @@ function List() {
       return data;
     } catch (error) {
       console.error('에러 발생:', error);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -164,7 +189,7 @@ function List() {
             <img src="/logo.png" alt="로고" />
           </Link>
         </h1>
-        <Button type="answer" width="answerSmall" />
+        <Button type="answer" width="161px" height="46px" />
       </ListHeader>
 
       <ListBody>
@@ -176,21 +201,27 @@ function List() {
         </div>
 
         <QList>
-          {list.map((item) => {
-            return (
-              <li key={item.id}>
-                <Qcard
-                  profile={item.imageSource}
-                  nickName={item.name}
-                  question={item.questionCount}
-                  id={item.id}
-                />
-              </li>
-            );
-          })}
+          {loading ? (
+            <div>로딩중..</div>
+          ) : (
+            list.map((item) => {
+              return (
+                <li key={item.id}>
+                  <Qcard
+                    profile={item.imageSource}
+                    nickName={item.name}
+                    question={item.questionCount}
+                    id={item.id}
+                  />
+                </li>
+              );
+            })
+          )}
         </QList>
 
-        <PagenationWrap>페이지네이션</PagenationWrap>
+        <PagenationWrap>
+          <Pagenation />
+        </PagenationWrap>
       </ListBody>
     </ListWrap>
   );
