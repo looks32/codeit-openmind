@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { deleteQuestionsBySubject, postQuestion } from '../utill/api';
 import { loadQuestionsBySubject as loadData } from '../utill/load';
+import { formatRelativeTime } from '../utill/time';
 
 function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
