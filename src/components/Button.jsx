@@ -107,8 +107,7 @@ function Button({
   height = '',
   type = '',
   children,
-  disabled,
-  onClick,
+  ...rest // disabled, onClick
 }) {
   const defaultText =
     type === 'answer'
@@ -122,21 +121,11 @@ function Button({
   return (
     <div>
       {type === 'insert' ? (
-        <InsertButton
-          width={width}
-          height={height}
-          disabled={disabled}
-          onClick={onClick}
-        >
+        <InsertButton width={width} height={height} {...rest}>
           {children || defaultText}
         </InsertButton>
       ) : (
-        <BaseButton
-          width={width}
-          height={height}
-          type={type}
-          disabled={disabled}
-        >
+        <BaseButton width={width} height={height} type={type} {...rest}>
           {children || defaultText}
 
           {iconTypes.includes(type) && (

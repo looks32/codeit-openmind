@@ -4,61 +4,43 @@ import CircleImage from '../components/Profile';
 import Button from '../components/Button';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { deleteQuestionsBySubject } from '../utill/api';
+import { deleteQuestionsBySubject, postQuestion } from '../utill/api';
+import { loadQuestionsBySubject as loadData } from '../utill/load';
 
-function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
+function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
   const [deleting, setDeleting] = useState(false); // 전체 삭제하기 버튼 상태
+  const [subject, setSubject] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [items, setItems] = useState([
-    {
-      questionProps: {
-        question: '좋아하는 동물?',
-        timeAgo: '2주전',
-        state: 'pending',
-      },
-      answerProps: { state: 'pending', userImage, userName },
-    },
-    {
-      questionProps: {
-        question: '좋아하는 동물은?',
-        timeAgo: '2주전',
-        state: 'pending',
-      },
-      answerProps: { state: 'pending', userImage, userName },
-    },
-    {
-      questionProps: {
-        question:
-          '좋아하는 동물은?좋아하는 동물은?좋아하는 동물은? 좋아하동 물은?',
-        timeAgo: '2주전',
-        state: 'answered',
-      },
-      answerProps: {
-        state: 'answered',
-        userName,
-        timeAgo: '2주전',
-        answer:
-          '그릇을 몰라 귀는 이상 오직 피고, 가슴이 이상, 못할 범바람이다. 찾아다녀도, 젖인 방향하였다.',
-      },
-    },
-    {
-      questionProps: {
-        question:
-          '좋아하는 동물은?좋아하는 동물은?좋아하는 동물은? 좋아하동 물은?',
-        timeAgo: '2주전',
-        state: 'answered',
-      },
-      answerProps: { state: 'rejected', userName, timeAgo: '2주전' },
-    },
-    {
-      questionProps: {
-        question: '좋아하는 동물은?',
-        timeAgo: '2주전',
-        state: 'pending',
-      },
-    },
-  ]);
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!subjectId) return;
+      try {
+        setLoading(true);
+        setError(null);
+        const { subject: s, questions: q } = await loadData(subjectId);
+        if (!mounted) return;
+        setSubject(s);
+        setQuestions(q);
+      } catch (e) {
+        if (!mounted) return;
+        setError(e);
+      } finally {
+        if (!mounted) return;
+        setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [subjectId]);
+
+  if (loading) return <div style={{ padding: 16 }}>로딩 중…</div>;
+  if (error) return <div style={{ padding: 16 }}>불러오기에 실패했습니다.</div>;
 
   return (
     <div>
@@ -66,8 +48,8 @@ function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
         <Banner />
         <Logo src="/logo.png" alt="OpenMind" />
 
-        <CircleImage src={userImage} sizes="136px" />
-        <UserName>{userName}</UserName>
+        <CircleImage src={subject?.imageSource} sizes="136px" />
+        <UserName>{subject?.name}</UserName>
         {/* Button/share 컴포넌트 위치 */}
       </TopRow>
 
@@ -94,7 +76,10 @@ function Answer({ userImage = '/cat.jpg', userName = '아초는고양이' }) {
             전체 삭제하기
           </Button>
         </RightBar>
-        <FeedCardGroup items={items} count={items.length} />
+        <FeedCardGroup
+          questions={questions}
+          onChange={(next) => setQuestions(next)}
+        />
       </Content>
     </div>
   );

@@ -80,6 +80,7 @@ export default function FeedCard({
   answerProps = {},
   reactionProps = {},
   hideAnswer = false,
+  onDeleted = () => {},
 }) {
   const [showPopup, setShowPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);

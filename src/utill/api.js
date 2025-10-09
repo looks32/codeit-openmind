@@ -153,4 +153,5 @@ export async function deleteQuestionsBySubject(subjectId) {
   const res = await getQuestionsBySubject(subjectId);
   const list = Array.isArray(res?.results) ? res.results : [];
   await Promise.all(list.map((el) => deleteQuestion(el.id)));
+  return true;
 }
