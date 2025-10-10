@@ -108,8 +108,8 @@ const TopRow = styled.div`
 const Divider = styled.div`
   width: 100%;
   height: 1px;
-  background: #eee;
-  margin: 24px 0 0 0;
+  background: var(--Gray30, #cfcfcf);
+  margin: 0;
 `;
 
 const BottomRow = styled.div`

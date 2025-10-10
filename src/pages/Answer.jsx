@@ -3,9 +3,12 @@ import styled, { keyframes } from 'styled-components';
 import CircleImage from '../components/Profile';
 import Button from '../components/Button';
 import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { deleteQuestionsBySubject } from '../utill/api';
-import { loadQuestionsBySubject as loadData, loadMoreQuestionsByUrl } from '../utill/load';
+import {
+  loadQuestionsBySubject as loadData,
+  loadMoreQuestionsByUrl,
+} from '../utill/load';
 
 function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
@@ -17,6 +20,17 @@ function Answer() {
   const [nextUrl, setNextUrl] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(null);
+  const [size, setSize] = useState(
+    window.innerWidth <= 768 ? '104px' : '136px'
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize(window.innerWidth <= 768 ? '104px' : '136px');
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -25,12 +39,17 @@ function Answer() {
       try {
         setLoading(true);
         setError(null);
-  const { subject: s, questions: q, next, total } = await loadData(subjectId);
+        const {
+          subject: s,
+          questions: q,
+          next,
+          total,
+        } = await loadData(subjectId);
         if (!mounted) return;
         setSubject(s);
         setQuestions(q);
-  setNextUrl(next || null);
-  setTotalCount(typeof total === 'number' ? total : q?.length || 0);
+        setNextUrl(next || null);
+        setTotalCount(typeof total === 'number' ? total : q?.length || 0);
       } catch (e) {
         if (!mounted) return;
         setError(e);
@@ -48,7 +67,11 @@ function Answer() {
     if (!nextUrl || loadingMore || !subject) return;
     setLoadingMore(true);
     try {
-      const { questions: more, next, total } = await loadMoreQuestionsByUrl(nextUrl, subject);
+      const {
+        questions: more,
+        next,
+        total,
+      } = await loadMoreQuestionsByUrl(nextUrl, subject);
       setQuestions((prev) => {
         const seen = new Set(prev.map((q) => q.id));
         const filtered = more.filter((q) => !seen.has(q.id));
@@ -84,25 +107,28 @@ function Answer() {
     <div>
       <TopRow>
         <Banner />
-        <Logo src="/logo.png" alt="OpenMind" />
-        <CircleImage src={subject?.imageSource} sizes="136px" />
+        <Link to="/">
+          <Logo src="/logo.png" alt="OpenMind" />
+        </Link>
+        <CircleImage src={subject?.imageSource} sizes={size} />
         <UserName>{subject?.name}</UserName>
         {/* Button/share 컴포넌트 위치 */}
       </TopRow>
 
       <Content>
         <RightBar>
-          <Button
-            width="120px"
-            height="35px"
+          <EraseButton
             type="insert"
-            disabled={deleting}
+            disabled={deleting || questions.length === 0}
             onClick={async () => {
               if (deleting) return;
               try {
                 setDeleting(true);
                 await deleteQuestionsBySubject(subjectId); // 전체 삭제하기 API 호출
+                // 모든 페이지의 질문이 삭제되었으므로 로컬 상태도 즉시 반영
                 setQuestions([]);
+                setTotalCount(0);
+                setNextUrl(null);
               } catch (e) {
                 alert(`삭제 실패: ${e?.message || ''}`);
               } finally {
@@ -111,7 +137,7 @@ function Answer() {
             }}
           >
             {deleting ? '삭제 중...' : '전체 삭제하기'}
-          </Button>
+          </EraseButton>
         </RightBar>
         <FeedCardGroup
           questions={questions}
@@ -153,8 +179,13 @@ const Banner = styled.div`
 const Logo = styled.img`
   margin-top: 50px;
   margin-bottom: 12px;
-  height: 67px; /* 필요 시 조절 */
-  width: auto;
+  width: 170px;
+  height: 67px;
+
+  @media (max-width: 768px) {
+    width: 124px;
+    height: 49px;
+  }
 `;
 
 const UserName = styled.div`
@@ -211,4 +242,20 @@ const Spinner = styled.span`
   border: 3px solid #e5ded9;
   border-top-color: #bdb0a7;
   animation: ${spin} 0.8s linear infinite;
+`;
+
+const EraseButton = styled(Button)`
+  width: 100px;
+  height: 35px;
+  font-size: 15px;
+  @media (max-width: 768px) {
+    width: 70px;
+    height: 25px;
+    font-size: 10px;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    background: var(--Brown30, #c7bbb5);
+  }
 `;

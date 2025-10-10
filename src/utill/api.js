@@ -150,8 +150,27 @@ export async function postQuestion(subjectId, content) {
 
 // Answer 페이지 '전체 삭제하기' 기능
 export async function deleteQuestionsBySubject(subjectId) {
-  const res = await getQuestionsBySubject(subjectId);
-  const list = Array.isArray(res?.results) ? res.results : [];
-  await Promise.all(list.map((el) => deleteQuestion(el.id)));
+  // Iterate all pages and delete every question for the subject
+  let url = `${BASE_URL}subjects/${subjectId}/questions/`;
+  let allIds = [];
+  while (url) {
+    const res = await fetch(url);
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`${text}`);
+    }
+    const data = await res.json();
+    const results = Array.isArray(data?.results)
+      ? data.results
+      : Array.isArray(data)
+        ? data
+        : [];
+    allIds.push(...results.map((el) => el.id));
+    url = data?.next || null;
+  }
+  // Deduplicate just in case
+  const uniqueIds = Array.from(new Set(allIds));
+  // Delete in parallel but throttle if needed (small lists should be fine)
+  await Promise.all(uniqueIds.map((id) => deleteQuestion(id)));
   return true;
 }
