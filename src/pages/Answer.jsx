@@ -49,7 +49,11 @@ function Answer() {
     setLoadingMore(true);
     try {
       const { questions: more, next, total } = await loadMoreQuestionsByUrl(nextUrl, subject);
-      setQuestions((prev) => [...prev, ...more]);
+      setQuestions((prev) => {
+        const seen = new Set(prev.map((q) => q.id));
+        const filtered = more.filter((q) => !seen.has(q.id));
+        return [...prev, ...filtered];
+      });
       setNextUrl(next || null);
       if (typeof total === 'number') setTotalCount(total);
     } catch (e) {
