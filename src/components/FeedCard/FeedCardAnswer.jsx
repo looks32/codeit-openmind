@@ -13,26 +13,25 @@ const Card = styled.div`
   box-sizing: border-box;
   margin: 0 auto 0 auto;
   display: flex;
-  flex-direction: column;
   gap: 8px;
 `;
 
 const ProfileRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 12px;
 `;
 
 const UserName = styled.span`
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
   color: #222;
 `;
 
 const TimeAgo = styled.span`
-  font-size: 13px;
-  color: #bdb0a7;
+  font-size: 14px;
+  color:  var(--Gray40, #818181);
 `;
 
 const StyledButtonWrap = styled.div`
@@ -40,6 +39,14 @@ const StyledButtonWrap = styled.div`
   display: flex;
   gap: 8px;
 `;
+
+const Content = styled.div`
+  width: 100%;
+  margin-left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  `;
 
 export default function FeedCardAnswer({
   questionId,
@@ -86,8 +93,9 @@ export default function FeedCardAnswer({
   const isButtonActive = input.trim().length > 0;
   return (
     <Card>
+      <CircleImage src={userImage} sizes={size} />
+      <Content>
       <ProfileRow>
-        <CircleImage src={userImage} sizes={size} />
         <UserName>{userName}</UserName>
         {currentState !== 'pending' && !editing && (
           <TimeAgo>
@@ -158,6 +166,7 @@ export default function FeedCardAnswer({
       {isRejected && (
         <div style={{ color: 'red', fontSize: '16px' }}>답변 거절</div>
       )}
+      </Content>
     </Card>
   );
 }

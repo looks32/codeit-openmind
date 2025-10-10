@@ -17,19 +17,25 @@ const Row = styled.div`
 `;
 
 const Label = styled.span`
-  color: #bdb0a7;
-  font-size: 13px;
+  color:  var(--Gray40, #818181);
+  font-size: 14px;
 `;
 
 const TimeAgo = styled.span`
-  color: #bdb0a7;
-  font-size: 13px;
+  color:  var(--Gray40, #818181);
+  font-size: 14px;
 `;
 
 const QuestionText = styled.div`
   color: #222;
-  font-size: 16px;
+  font-size: 18px;
+  line-height: 24px;
   word-break: break-all;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    line-height: 22px;
+  }
 `;
 
 export default function FeedCardQuestion({ question = "좋아하는 동물은?좋아하는 동물은?좋아하는 동물은? 좋아하동 물은?", timeAgo = "2주 전" }) {

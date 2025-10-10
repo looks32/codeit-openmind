@@ -8,18 +8,15 @@ import { deleteQuestion } from '../../utill/api';
 // 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
 const Badge = styled.span`
   display: inline-block;
-  color: #bdb0a7;
   font-size: 13px;
   font-weight: 600;
   border-radius: 6px;
-  padding: 4px 12px;
 `;
 
 const MoreButton = styled.button`
   background: none;
   border: none;
   font-size: 22px;
-  color: #bdb0a7;
   cursor: pointer;
 `;
 
@@ -58,7 +55,7 @@ const TopRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 32px;
 `;
 
 const Divider = styled.div`
