@@ -27,11 +27,16 @@ const UserName = styled.span`
   font-size: 18px;
   line-height: 24px;
   color: #222;
+
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 18px;
+  }
 `;
 
 const TimeAgo = styled.span`
   font-size: 14px;
-  color:  var(--Gray40, #818181);
+  color: var(--Gray40, #818181);
 `;
 
 const StyledButtonWrap = styled.div`
@@ -46,7 +51,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  `;
+`;
 
 export default function FeedCardAnswer({
   questionId,
@@ -66,14 +71,14 @@ export default function FeedCardAnswer({
   const [currentState, setCurrentState] = useState(state);
   // 새로 생성된 답변의 id를 보관해 이후 수정 시 사용
   const [currentAnswerId, setCurrentAnswerId] = useState(answerId);
-  const [size, setSize] = useState(window.innerWidth <= 768 ? "32px" : "48px");
+  const [size, setSize] = useState(window.innerWidth <= 768 ? '32px' : '48px');
 
   useEffect(() => {
     const handleResize = () => {
-      setSize(window.innerWidth <= 768 ? "32px" : "48px");
+      setSize(window.innerWidth <= 768 ? '32px' : '48px');
     };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -95,77 +100,77 @@ export default function FeedCardAnswer({
     <Card>
       <CircleImage src={userImage} sizes={size} />
       <Content>
-      <ProfileRow>
-        <UserName>{userName}</UserName>
-        {currentState !== 'pending' && !editing && (
-          <TimeAgo>
-            {typeof timeAgo === 'string' && timeAgo ? timeAgo : '방금'}
-          </TimeAgo>
-        )}
-      </ProfileRow>
+        <ProfileRow>
+          <UserName>{userName}</UserName>
+          {currentState !== 'pending' && !editing && (
+            <TimeAgo>
+              {typeof timeAgo === 'string' && timeAgo ? timeAgo : '방금'}
+            </TimeAgo>
+          )}
+        </ProfileRow>
 
-      {/* 답변 입력창 (대기중이거나 편집 모드일 때만, 거절 상태에서는 항상 비활성) */}
-      {canEdit && (
-        <>
-          <InputTextArea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              currentState === 'pending'
-                ? '답변을 입력해주세요'
-                : '답변을 수정하세요'
-            }
-          />
-          <StyledButtonWrap>
-            <ButtonBox
-              style={{ width: '100%' }}
-              disabled={!isButtonActive}
-              onClick={async () => {
-                if (!isButtonActive) return;
-                const content = input.trim();
-                try {
-                  if (currentState === 'pending') {
-                    const created = await postAnswer(questionId, content);
-                    // 생성된 답변 ID 저장 후 상태 전환
-                    setCurrentAnswerId(created?.id);
-                    setCurrentState('answered');
-                    onStateChange && onStateChange('answered');
-                  } else if (editing) {
-                    await patchAnswer(currentAnswerId, content);
-                    onStateChange && onStateChange('answered');
+        {/* 답변 입력창 (대기중이거나 편집 모드일 때만, 거절 상태에서는 항상 비활성) */}
+        {canEdit && (
+          <>
+            <InputTextArea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={
+                currentState === 'pending'
+                  ? '답변을 입력해주세요'
+                  : '답변을 수정하세요'
+              }
+            />
+            <StyledButtonWrap>
+              <ButtonBox
+                style={{ width: '100%' }}
+                disabled={!isButtonActive}
+                onClick={async () => {
+                  if (!isButtonActive) return;
+                  const content = input.trim();
+                  try {
+                    if (currentState === 'pending') {
+                      const created = await postAnswer(questionId, content);
+                      // 생성된 답변 ID 저장 후 상태 전환
+                      setCurrentAnswerId(created?.id);
+                      setCurrentState('answered');
+                      onStateChange && onStateChange('answered');
+                    } else if (editing) {
+                      await patchAnswer(currentAnswerId, content);
+                      onStateChange && onStateChange('answered');
+                    }
+                    onSave && onSave(content);
+                  } catch (e) {
+                    alert(`처리 실패: ${e?.message || ''}`);
                   }
-                  onSave && onSave(content);
-                } catch (e) {
-                  alert(`처리 실패: ${e?.message || ''}`);
-                }
-              }}
-            >
-              {currentState === 'pending'
-                ? '답변 완료'
-                : editing
-                  ? '수정 완료'
-                  : '수정 중...'}
-            </ButtonBox>
-          </StyledButtonWrap>
-        </>
-      )}
+                }}
+              >
+                {currentState === 'pending'
+                  ? '답변 완료'
+                  : editing
+                    ? '수정 완료'
+                    : '수정 중...'}
+              </ButtonBox>
+            </StyledButtonWrap>
+          </>
+        )}
 
-      {/* 답변 완료 표시 (편집 모드가 아닐 때만) */}
-      {currentState === 'answered' && !editing && (
-        <div
-          style={{
-            whiteSpace: 'pre-line',
-            color: '#222',
-            fontSize: '16px',
-          }}
-        >
-          {answer}
-        </div>
-      )}
+        {/* 답변 완료 표시 (편집 모드가 아닐 때만) */}
+        {currentState === 'answered' && !editing && (
+          <div
+            style={{
+              whiteSpace: 'pre-line',
+              color: '#222',
+              fontSize: '16px',
+            }}
+          >
+            {answer}
+          </div>
+        )}
 
-      {isRejected && (
-        <div style={{ color: 'red', fontSize: '16px' }}>답변 거절</div>
-      )}
+        {isRejected && (
+          <div style={{ color: 'red', fontSize: '16px' }}>답변 거절</div>
+        )}
       </Content>
     </Card>
   );

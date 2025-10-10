@@ -6,6 +6,7 @@ import Reaction from '../Reaction';
 import { deleteQuestion } from '../../utill/api';
 
 // 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
+
 const Badge = styled.span`
   display: inline-block;
   font-size: 13px;
@@ -85,16 +86,23 @@ const CardWrap = styled.div`
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  padding: 32px 32px 0 32px;
-  margin: 0 auto 32px auto;
+  padding: 32px;
+  margin: 0 auto 20px auto;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  @media (max-width: 768px) {
+    gap: 24px;
+    padding: 24px;
+  }
 `;
 
 const TopRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
 `;
 
 const Divider = styled.div`
@@ -107,8 +115,6 @@ const Divider = styled.div`
 const BottomRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 0;
 `;
 
 export default function FeedCard({
