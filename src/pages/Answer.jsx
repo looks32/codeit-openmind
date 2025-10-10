@@ -1,11 +1,11 @@
 import FeedCardGroup from '../components/FeedCard/FeedCardGroup';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import CircleImage from '../components/Profile';
 import Button from '../components/Button';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { deleteQuestionsBySubject, postQuestion } from '../utill/api';
-import { loadQuestionsBySubject as loadData } from '../utill/load';
+import { deleteQuestionsBySubject } from '../utill/api';
+import { loadQuestionsBySubject as loadData, loadMoreQuestionsByUrl } from '../utill/load';
 
 function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
@@ -14,6 +14,9 @@ function Answer() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [nextUrl, setNextUrl] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(null);
 
   useEffect(() => {
     let mounted = true;
@@ -22,10 +25,12 @@ function Answer() {
       try {
         setLoading(true);
         setError(null);
-        const { subject: s, questions: q } = await loadData(subjectId);
+  const { subject: s, questions: q, next, total } = await loadData(subjectId);
         if (!mounted) return;
         setSubject(s);
         setQuestions(q);
+  setNextUrl(next || null);
+  setTotalCount(typeof total === 'number' ? total : q?.length || 0);
       } catch (e) {
         if (!mounted) return;
         setError(e);
@@ -39,6 +44,35 @@ function Answer() {
     };
   }, [subjectId]);
 
+  const loadMore = useCallback(async () => {
+    if (!nextUrl || loadingMore || !subject) return;
+    setLoadingMore(true);
+    try {
+      const { questions: more, next, total } = await loadMoreQuestionsByUrl(nextUrl, subject);
+      setQuestions((prev) => [...prev, ...more]);
+      setNextUrl(next || null);
+      if (typeof total === 'number') setTotalCount(total);
+    } catch (e) {
+      console.error('추가 로딩 실패:', e);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [nextUrl, loadingMore, subject]);
+
+  useEffect(() => {
+    function onScroll() {
+      if (loading || loadingMore || !nextUrl) return;
+      const nearBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 200;
+      if (nearBottom) {
+        loadMore();
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [loading, loadingMore, nextUrl, loadMore]);
+
   if (loading) return <div style={{ padding: 16 }}>로딩 중…</div>;
   if (error) return <div style={{ padding: 16 }}>불러오기에 실패했습니다.</div>;
 
@@ -47,7 +81,6 @@ function Answer() {
       <TopRow>
         <Banner />
         <Logo src="/logo.png" alt="OpenMind" />
-
         <CircleImage src={subject?.imageSource} sizes="136px" />
         <UserName>{subject?.name}</UserName>
         {/* Button/share 컴포넌트 위치 */}
@@ -78,8 +111,14 @@ function Answer() {
         </RightBar>
         <FeedCardGroup
           questions={questions}
+          totalCount={totalCount}
           onChange={(next) => setQuestions(next)}
         />
+        {loadingMore && (
+          <LoadingMore>
+            <Spinner aria-label="loading" />
+          </LoadingMore>
+        )}
       </Content>
     </div>
   );
@@ -140,4 +179,27 @@ const RightBar = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 8px;
+`;
+
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const LoadingMore = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: #818181;
+`;
+
+const Spinner = styled.span`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #e5ded9;
+  border-top-color: #bdb0a7;
+  animation: ${spin} 0.8s linear infinite;
 `;
