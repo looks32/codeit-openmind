@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import Modal from "../components/Modal";
-import { loadQuestionsBySubject as loadData } from "../utill/load";
+import { loadQuestionsBySubject as loadData, loadMoreQuestionsByUrl } from "../utill/load";
 import { postQuestion } from "../utill/api";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import CircleImage from "../components/Profile";
 import InputTextArea from "../components/InputTextArea";
 import ButtonBox from "../components/ButtonBox";
 import Button from "../components/Button";
+import FeedCardGroup from "../components/FeedCard/FeedCardGroup";
 
 function Post() {
   const { id: subjectId } = useParams();
@@ -19,6 +20,10 @@ function Post() {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
 
+  const [nextUrl, setNextUrl] = useState(null);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(null);
+
   useEffect(() => {
       let mounted = true;
       (async () => {
@@ -26,10 +31,12 @@ function Post() {
         try {
           setLoading(true);
           setError(null);
-          const { subject: s, questions: q } = await loadData(subjectId);
+          const { subject: s, questions: q, next, total } = await loadData(subjectId);
           if (!mounted) return;
           setSubject(s);
           setQuestions(q.map((question) => ({ ...question, hideAnswer: true })));
+          setNextUrl(next || null);
+      setTotalCount(typeof total === 'number' ? total : q?.length || 0);
         } catch (e) {
           if (!mounted) return;
           setError(e);
@@ -42,14 +49,71 @@ function Post() {
         mounted = false;
       };
     }, [subjectId]);
+    
+      const loadMore = useCallback(async () => {
+        if (!nextUrl || loadingMore || !subject) return;
+        setLoadingMore(true);
+        try {
+          const { questions: more, next, total } = await loadMoreQuestionsByUrl(nextUrl, subject);
+          // Post 페이지에선 추가 로드된 질문들도 항상 hideAnswer: true 상태로 유지
+          const moreWithHide = more.map((q) => ({ ...q, hideAnswer: true }));
+          setQuestions((prev) => {
+            const seen = new Set(prev.map((q) => q.id));
+            const filtered = moreWithHide.filter((q) => !seen.has(q.id));
+            return [...prev, ...filtered];
+          });
+          setNextUrl(next || null);
+          if (typeof total === 'number') setTotalCount(total);
+        } catch (e) {
+          console.error('추가 로딩 실패:', e);
+        } finally {
+          setLoadingMore(false);
+        }
+      }, [nextUrl, loadingMore, subject]);
+    
+      useEffect(() => {
+        function onScroll() {
+          if (loading || loadingMore || !nextUrl) return;
+          const nearBottom =
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 200;
+          if (nearBottom) {
+            loadMore();
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+      }, [loading, loadingMore, nextUrl, loadMore]);
   
     if (loading) return <div style={{ padding: 16 }}>로딩 중…</div>;
     if (error) return <div style={{ padding: 16 }}>불러오기에 실패했습니다.</div>;
   
   return (
     <>
-      <FloatingButton type="insert" onClick={() => setIsModalOpen(true)}>질문 작성하기</FloatingButton>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+    <div>
+      <TopRow>
+        <Banner />
+        <Logo src="/logo.png" alt="OpenMind" />
+        <CircleImage src={subject?.imageSource} sizes="136px" />
+        <UserName>{subject?.name}</UserName>
+        {/* Button/share 컴포넌트 위치 */}
+      </TopRow>
+
+      <Content>
+        <FeedCardGroup
+          questions={questions}
+          totalCount={totalCount}
+          onChange={(next) => setQuestions(next)}
+        />
+        {loadingMore && (
+          <LoadingMore>
+            <Spinner aria-label="loading" />
+          </LoadingMore>
+        )}
+      </Content>
+    </div>
+      <FloatingButton type="insert" onClick={() => setIsModalOpen(true)}><span className="full">질문 작성하기</span><span className="short">질문 작성</span></FloatingButton>
+      <Modal isOpen={isModalOpen}>
           <ModalHeader>
               <img src="/question.svg" alt="질문"/>
             <h2>질문을 작성하세요</h2>
@@ -62,7 +126,7 @@ function Post() {
           <ProfileSection>
             <span>To.</span>
             <CircleImage src={subject?.imageSource} sizes="32px" />
-            <UserName>{subject?.name}</UserName>
+            <Name>{subject?.name}</Name>
           </ProfileSection>
           
             <InputTextArea
@@ -102,7 +166,22 @@ const FloatingButton = styled(Button)`
   position: fixed;
   bottom: 24px;
   right: 24px;
+
+  .short {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    .full {
+      display: none;
+    }
+    .short {
+      display: inline;
+    }
+  }
   `;
+
+  
 
 const ModalHeader = styled.div`
   display: flex;
@@ -152,8 +231,85 @@ const ProfileSection = styled.div`
   font-size: 14px;
 `;
 
-const UserName = styled.span`
+const Name = styled.span`
   font-weight: 600;
   font-size: 16px;
   color: #333;
+`;
+
+const TopRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+// 배너 이미지를 배경으로 사용하고, 내부에 로고를 배치
+const Banner = styled.div`
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  max-width: 1200px;
+  height: 234px;
+  margin: 0 auto;
+  background: url('/banner.png') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Logo = styled.img`
+  margin-top: 50px;
+  margin-bottom: 12px;
+  height: 67px; /* 필요 시 조절 */
+  width: auto;
+`;
+
+const UserName = styled.div`
+  color: var(--Grayscale-60, #000);
+  font-feature-settings:
+    'liga' off,
+    'clig' off;
+  font-family: Actor;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px; /* 125% */
+  margin: 16px 0 8px 0;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+    line-height: 30px;
+  }
+`;
+
+// FeedCardGroup과 동일한 폭에 맞춘 컨테이너와 우측 정렬 바
+const Content = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+`;
+
+const spin = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const LoadingMore = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px;
+  color: #818181;
+`;
+
+const Spinner = styled.span`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #e5ded9;
+  border-top-color: #bdb0a7;
+  animation: ${spin} 0.8s linear infinite;
 `;

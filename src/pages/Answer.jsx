@@ -168,6 +168,11 @@ const UserName = styled.div`
   font-weight: 400;
   line-height: 40px; /* 125% */
   margin: 16px 0 8px 0;
+
+  @media (max-width: 768px) {
+    font-size: 24px;
+    line-height: 30px;
+  }
 `;
 
 // FeedCardGroup과 동일한 폭에 맞춘 컨테이너와 우측 정렬 바

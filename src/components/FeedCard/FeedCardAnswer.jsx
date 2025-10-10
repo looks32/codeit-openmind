@@ -59,6 +59,15 @@ export default function FeedCardAnswer({
   const [currentState, setCurrentState] = useState(state);
   // 새로 생성된 답변의 id를 보관해 이후 수정 시 사용
   const [currentAnswerId, setCurrentAnswerId] = useState(answerId);
+  const [size, setSize] = useState(window.innerWidth <= 768 ? "32px" : "48px");
+
+  useEffect(() => {
+    const handleResize = () => {
+      setSize(window.innerWidth <= 768 ? "32px" : "48px");
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     setCurrentState(state);
@@ -78,7 +87,7 @@ export default function FeedCardAnswer({
   return (
     <Card>
       <ProfileRow>
-        <CircleImage src={userImage} sizes="48px" />
+        <CircleImage src={userImage} sizes={size} />
         <UserName>{userName}</UserName>
         {currentState !== 'pending' && !editing && (
           <TimeAgo>
