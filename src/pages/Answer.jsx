@@ -75,7 +75,7 @@ function Answer() {
               }
             }}
           >
-            전체 삭제하기
+            {deleting ? '삭제 중...' : '전체 삭제하기'}
           </Button>
           {/* 질문 만들기 (테스트용 임시 버튼) */}
           <Button

@@ -88,7 +88,7 @@ function Post() {
                 setInput('');
               }
             }}>
-            질문 보내기
+            {sending ? '전송 중...' : '질문 보내기'}
           </ButtonBox>
           </ModalBody>
       </Modal>
