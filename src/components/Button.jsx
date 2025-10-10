@@ -1,9 +1,5 @@
 import styled, { css } from 'styled-components';
-const Sizes = {
-  smallHeight: 34,
-  answerSmall: 149,
-  questionSmall: 120,
-};
+
 
 const iconTypes = ['answer', 'question'];
 
@@ -22,7 +18,7 @@ const ArrowIcon = styled.span`
 
 const types = {
   answer: css`
-    width: ${({ width }) => Sizes[width] ?? '192'}px;
+    width: ${({ width }) => `${width}` ?? '192px'};
     background-color: var(--Brown10);
     border: 1px solid var(--Brown40);
     color: var(--Brown40);
@@ -37,7 +33,7 @@ const types = {
   `,
   // 질문
   question: css`
-    width: ${({ width }) => Sizes[width] ?? '160'}px;
+    width: ${({ width }) => `${width}` ?? '160px'};
     background-color: var(--Brown40);
     color: var(--Gray10);
     border: 2px solid transparent;
@@ -53,7 +49,7 @@ const types = {
 };
 
 const BaseButton = styled.button`
-  height: ${({ height }) => Sizes[height] ?? '46'}px;
+  height: ${({ height }) => `${height}` ?? '46px'};
   padding: 0;
   padding-left: ${({ width }) => (width ? '12px' : '24px')};
   border-radius: 8px;

@@ -20,6 +20,9 @@
   --Yellow: #fee500;
   --Red: #b93333;
 }
+body {
+  background-color: var(--Gray20);
+}
 html,
 body,
 div,
