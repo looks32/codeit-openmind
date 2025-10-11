@@ -1,5 +1,9 @@
+import OutBound from "../components/OutBound";
+
 function Post() {
-  return <div>post</div>;
+  return <div>
+    <OutBound/>
+  </div>;
 }
 
 export default Post;
