@@ -20,26 +20,17 @@ const ModalWrap = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
   }
+`;
 
-  > div {
-    position: absolute;
-    width: 400px;
-    height: 600px;
-    border-radius: 10px;
+const ModalBody = styled.div`
+  position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 16px;
     padding: 20px;
     background-color: #fff;
-  }
-
-  button {
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-`;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    `;
 
 function Modal({ isOpen, onClose, children }) {
   useEffect(() => {
@@ -59,10 +50,9 @@ function Modal({ isOpen, onClose, children }) {
   return createPortal(
     <ModalWrap>
       <div className="modal_layer" onClick={onClose}></div>
-      <div>
-        <button onClick={onClose}>X</button>
+      <ModalBody>
         {children}
-      </div>
+      </ModalBody>
     </ModalWrap>,
     document.getElementById('modal-root')
   );
