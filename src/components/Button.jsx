@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-
+import { Link } from 'react-router-dom';
 
 const iconTypes = ['answer', 'question'];
 
@@ -99,6 +99,7 @@ const InsertButton = styled.button`
 `;
 
 function Button({
+  to = '',
   width = '',
   height = '',
   type = '',
@@ -115,7 +116,7 @@ function Button({
           : '';
 
   return (
-    <div>
+    <Link to={to}>
       {type === 'insert' ? (
         <InsertButton width={width} height={height} {...rest}>
           {children || defaultText}
@@ -144,7 +145,7 @@ function Button({
           )}
         </BaseButton>
       )}
-    </div>
+    </Link>
   );
 }
 
