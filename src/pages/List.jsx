@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import Pagination from '../components/Pagination';
 import { fetchSubjects } from '../utill/api';
+import Loading from '../components/Loading';
 
 const ListWrap = styled.div`
   width: 100%;
@@ -217,7 +218,7 @@ function List() {
 
         <QList>
           {loading ? (
-            <div>로딩중..</div>
+            <Loading />
           ) : (
             data.map((item) => {
               return (
