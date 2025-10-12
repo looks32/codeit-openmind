@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
-import Qcard from '../components/Qcard';
+import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { fetchSubjects } from '../utill/api';
 import Dropdown from '../components/Dropdown/Dropdown';
 import CustomMenu from '../components/Dropdown/Custommenu';
-import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import Pagination from '../components/Pagination';
-import { fetchSubjects } from '../utill/api';
-import Loading from '../components/Loading';
+import QList from '../components/List/QList';
 
 const ListWrap = styled.div`
   width: 100%;
@@ -100,48 +100,6 @@ const ListBody = styled.div`
   }
 `;
 
-const QList = styled.ol`
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  gap: 20px;
-
-  li {
-    width: calc((100% / 4) - 15px);
-  }
-
-  // 유저카드 186px이하 시 3단으로 변경
-  @media (max-width: 878px) {
-    li {
-      width: calc((100% / 3) - 14px);
-    }
-  }
-
-  /* 모바일 */
-  @media (max-width: 667px) {
-    li {
-      width: calc((100% / 2) - 10px);
-
-      a {
-        padding: 16px;
-      }
-
-      strong {
-        font-size: 18px;
-      }
-
-      span {
-        font-size: 14px;
-      }
-
-      img {
-        width: 48px;
-        height: 48px;
-      }
-    }
-  }
-`;
-
 const PagenationWrap = styled.div`
   margin-top: 40px;
   text-align: center;
@@ -152,25 +110,45 @@ const PagenationWrap = styled.div`
   }
 `;
 
+const LIMIT = 8;
+
 function List() {
+  const [user, setUser] = useState(null);
+
   const [label, setLabel] = useState('최신순');
   const [loading, setLoading] = useState(false);
 
-  const [list, setList] = useState([]);
-  const [sortList, setSortList] = useState([]);
-
   const [data, setData] = useState([]);
   const [count, setCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const LIMIT = 8;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get('page') || '1');
 
+  // 페이지네이션 페이지번호
+  useEffect(() => {
+    if (!searchParams.get('page')) {
+      setSearchParams({ page: '1' });
+    }
+  }, []);
+
+  // 로컬 스토리지 유저 확인
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+    } else {
+      setUser(null);
+    }
+  }, []);
+
+  // 리스트 데이터 패칭
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
         const data = await fetchSubjects(currentPage, LIMIT);
-        console.log(data);
         setData(data.results);
         setCount(data.count);
       } catch (e) {
@@ -185,17 +163,22 @@ function List() {
 
   const totalPages = Math.ceil(count / LIMIT);
 
-  useEffect(() => {
-    if (label === '이름순') {
-      const sorted = [...list].sort((a, b) =>
-        a.name.localeCompare(b.name, 'ko')
-      );
-      setSortList(sorted);
-    } else if (label === '최신순') {
-      const sorted = [...list].sort((a, b) => b.id - a.id);
-      setSortList(sorted);
-    }
-  }, [label, list]);
+  // 정렬 state
+  const sortList =
+    label === '이름순'
+      ? [...data].sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+      : [...data].sort((a, b) => b.id - a.id);
+
+  // 정렬 변경 이벤트
+  const handleLabelChange = (newLabel) => {
+    setLabel(newLabel);
+    setSearchParams({ page: '1' });
+  };
+
+  // 페이지 변경 이벤트
+  const handlePageChange = (page) => {
+    setSearchParams({ page });
+  };
 
   return (
     <ListWrap>
@@ -205,41 +188,29 @@ function List() {
             <img src="/logo.png" alt="로고" />
           </Link>
         </h1>
-        <Button type="answer" width="161px" height="46px" />
+        <Button
+          type="answer"
+          width="161px"
+          height="46px"
+          to={user ? `/post/${user}/answer` : '/'}
+        />
       </ListHeader>
 
       <ListBody>
         <div className="title">
           <h2>누구에게 질문할까요?</h2>
           <Dropdown label={label}>
-            <CustomMenu onSelect={(v) => setLabel(v)} />
+            <CustomMenu onSelect={handleLabelChange} />
           </Dropdown>
         </div>
 
-        <QList>
-          {loading ? (
-            <Loading />
-          ) : (
-            data.map((item) => {
-              return (
-                <li key={item.id}>
-                  <Qcard
-                    profile={item.imageSource}
-                    nickName={item.name}
-                    question={item.questionCount}
-                    id={item.id}
-                  />
-                </li>
-              );
-            })
-          )}
-        </QList>
+        <QList sortList={sortList} loading={loading} />
 
         <PagenationWrap>
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
           />
         </PagenationWrap>
       </ListBody>

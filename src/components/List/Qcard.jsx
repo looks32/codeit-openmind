@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import messages from '../assets/ico_messages.png';
-import CircleImage from '../components/Profile';
+import messages from '../../assets/ico_messages.png';
+import CircleImage from '../../components/Profile';
 import { Link } from 'react-router-dom';
 
 const Card = styled.div`
@@ -18,6 +18,9 @@ const Card = styled.div`
     display: block;
     margin-top: 12px;
     font-size: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .question_area {
