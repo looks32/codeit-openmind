@@ -40,7 +40,7 @@ const Empty = styled.img`
   margin: auto;
 `;
 
-export default function FeedCardGroup({ questions = [], onChange }) {
+export default function FeedCardGroup({ questions = [], totalCount, onChange }) {
   const handleDeleted = (id) => {
     onChange?.(questions.filter((q) => q.id !== id));
   };
@@ -60,7 +60,7 @@ export default function FeedCardGroup({ questions = [], onChange }) {
     <GroupWrap>
       <Banner>
         <img src="/Messages.svg" alt="Messages" />
-        {questions.length}개의 질문이 있습니다
+        {totalCount}개의 질문이 있습니다
       </Banner>
 
       {questions.map((q) => (

@@ -4,7 +4,6 @@ import List from './pages/List';
 import Post from './pages/Post';
 import Answer from './pages/Answer';
 import NotFound from './pages/NotFound';
-import ModalTestPage from './pages/ModalTestPage';
 
 function App() {
   return (
@@ -13,7 +12,6 @@ function App() {
       <Route path="/list" element={<List />}></Route>
       <Route path="/post/:id" element={<Post />}></Route>
       <Route path="/post/:id/answer" element={<Answer />}></Route>
-      <Route path="/testModal" element={<ModalTestPage />}></Route>
       <Route path="*" element={<NotFound />}></Route>
     </Routes>
   );
