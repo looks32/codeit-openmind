@@ -211,7 +211,7 @@ const UserName = styled.div`
 const Content = styled.div`
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 10px auto 0; // post와 차이
   padding: 16px;
   box-sizing: border-box;
 `;
@@ -219,7 +219,7 @@ const Content = styled.div`
 const RightBar = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 8px;
+  margin-bottom: 9px;
 `;
 
 const spin = keyframes`

@@ -362,7 +362,7 @@ const UserName = styled.div`
 const Content = styled.div`
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 38px auto 0; // answer와 차이
   padding: 16px;
   box-sizing: border-box;
 `;

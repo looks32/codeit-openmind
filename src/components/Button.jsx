@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const iconTypes = ['answer', 'question'];
 
 const ArrowIcon = styled.span`
@@ -106,30 +106,39 @@ function Button({
   ...rest // disabled, onClick
 }) {
   const defaultText =
-  type === 'answer'
-  ? '답변하러 가기'
-  : type === 'question'
-  ? '질문 받기'
-  : type === 'insert'
-  ? '질문 작성하기'
-  : '';
-  
+    type === 'answer'
+      ? '답변하러 가기'
+      : type === 'question'
+        ? '질문 받기'
+        : type === 'insert'
+          ? '질문 작성하기'
+          : '';
+
   const navigate = useNavigate();
-  const handleNavigate = () => {
+  const handleNavigate = (e) => {
     to && navigate(to);
     rest.onClick?.(e);
-  }
-
-
+  };
 
   return (
     <div>
       {type === 'insert' ? (
-        <InsertButton width={width} height={height} {...rest} onClick={handleNavigate}>
+        <InsertButton
+          width={width}
+          height={height}
+          {...rest}
+          onClick={handleNavigate}
+        >
           {children || defaultText}
         </InsertButton>
       ) : (
-        <BaseButton width={width} height={height} type={type} {...rest} onClick={handleNavigate}>
+        <BaseButton
+          width={width}
+          height={height}
+          type={type}
+          {...rest}
+          onClick={handleNavigate}
+        >
           {children || defaultText}
 
           {iconTypes.includes(type) && (
