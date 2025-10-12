@@ -55,6 +55,7 @@ function Post() {
         } = await loadData(subjectId);
         if (!mounted) return;
         setSubject(s);
+        // post 페이지에선 항상 답변 숨김 상태로 시작
         setQuestions(q.map((question) => ({ ...question, hideAnswer: true })));
         setNextUrl(next || null);
         setTotalCount(typeof total === 'number' ? total : q?.length || 0);
@@ -195,6 +196,7 @@ function Post() {
                       likeNumber: created.like ?? 0,
                       deLikeNumber: created.dislike ?? 0,
                     },
+                    // post 페이지에선 항상 답변 숨김
                     hideAnswer: true,
                   };
                   setQuestions((prev) => [newItem, ...prev]);
