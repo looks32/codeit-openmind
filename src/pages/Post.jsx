@@ -14,6 +14,7 @@ import ButtonBox from '../components/ButtonBox';
 import Button from '../components/Button';
 import FeedCardGroup from '../components/FeedCard/FeedCardGroup';
 import OutBound from '../components/OutBound';
+import Loading from '../components/Loading';
 
 function Post() {
   const { id: subjectId } = useParams();
@@ -112,7 +113,7 @@ function Post() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [loading, loadingMore, nextUrl, loadMore]);
 
-  if (loading) return <div style={{ padding: 16 }}>로딩 중…</div>;
+  if (loading) return <Loading />;
   if (error) return <div style={{ padding: 16 }}>불러오기에 실패했습니다.</div>;
 
   return (

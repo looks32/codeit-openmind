@@ -10,6 +10,7 @@ import {
   loadMoreQuestionsByUrl,
 } from '../utill/load';
 import OutBound from '../components/OutBound';
+import Loading from '../components/Loading';
 
 function Answer() {
   const { id: subjectId } = useParams(); // URL에서 subjectId 추출 (예: /post/:id/answer)
@@ -101,7 +102,7 @@ function Answer() {
     return () => window.removeEventListener('scroll', onScroll);
   }, [loading, loadingMore, nextUrl, loadMore]);
 
-  if (loading) return <div style={{ padding: 16 }}>로딩 중…</div>;
+  if (loading) return <Loading />;
   if (error) return <div style={{ padding: 16 }}>불러오기에 실패했습니다.</div>;
 
   return (
