@@ -13,6 +13,7 @@ import InputTextArea from '../components/InputTextArea';
 import ButtonBox from '../components/ButtonBox';
 import Button from '../components/Button';
 import FeedCardGroup from '../components/FeedCard/FeedCardGroup';
+import OutBound from '../components/OutBound';
 
 function Post() {
   const { id: subjectId } = useParams();
@@ -124,7 +125,7 @@ function Post() {
           </Link>
           <CircleImage src={subject?.imageSource} sizes={size} />
           <UserName>{subject?.name}</UserName>
-          {/* Button/share 컴포넌트 위치 */}
+          <OutBound />
         </TopRow>
 
         <Content>
@@ -349,7 +350,7 @@ const UserName = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 40px; /* 125% */
-  margin: 16px 0 8px 0;
+  margin: 16px 0 12px 0;
 
   @media (max-width: 768px) {
     font-size: 24px;
