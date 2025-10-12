@@ -5,7 +5,9 @@ import Dropdown from '../components/Dropdown/Dropdown';
 import CustomMenu from '../components/Dropdown/Custommenu';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
-import Pagenation from '../components/Pagenation';
+import Pagination from '../components/Pagination';
+import { fetchSubjects } from '../utill/api';
+import Loading from '../components/Loading';
 
 const ListWrap = styled.div`
   width: 100%;
@@ -142,6 +144,7 @@ const QList = styled.ol`
 
 const PagenationWrap = styled.div`
   margin-top: 40px;
+  text-align: center;
 
   /* 모바일 */
   @media (max-width: 667px) {
@@ -150,36 +153,49 @@ const PagenationWrap = styled.div`
 `;
 
 function List() {
-  const [label, setLabel] = useState('이름순');
-  const [list, setList] = useState([]);
+  const [label, setLabel] = useState('최신순');
   const [loading, setLoading] = useState(false);
 
-  async function getData() {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        'https://openmind-api.vercel.app/19-9/subjects/'
-      );
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('에러 발생:', error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const [list, setList] = useState([]);
+  const [sortList, setSortList] = useState([]);
+
+  const [data, setData] = useState([]);
+  const [count, setCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const LIMIT = 8;
 
   useEffect(() => {
-    async function fetchData() {
-      const data = await getData();
-      // console.log(data);
-      // console.log(data.previous);
-      // console.log(data.next);
-      // console.log(data.count);
-      setList(data.results || []);
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchSubjects(currentPage, LIMIT);
+        console.log(data);
+        setData(data.results);
+        setCount(data.count);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [currentPage]);
+
+  const totalPages = Math.ceil(count / LIMIT);
+
+  useEffect(() => {
+    if (label === '이름순') {
+      const sorted = [...list].sort((a, b) =>
+        a.name.localeCompare(b.name, 'ko')
+      );
+      setSortList(sorted);
+    } else if (label === '최신순') {
+      const sorted = [...list].sort((a, b) => b.id - a.id);
+      setSortList(sorted);
     }
-    fetchData();
-  }, []);
+  }, [label, list]);
 
   return (
     <ListWrap>
@@ -202,9 +218,9 @@ function List() {
 
         <QList>
           {loading ? (
-            <div>로딩중..</div>
+            <Loading />
           ) : (
-            list.map((item) => {
+            data.map((item) => {
               return (
                 <li key={item.id}>
                   <Qcard
@@ -220,7 +236,11 @@ function List() {
         </QList>
 
         <PagenationWrap>
-          <Pagenation />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </PagenationWrap>
       </ListBody>
     </ListWrap>

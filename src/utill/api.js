@@ -174,3 +174,13 @@ export async function deleteQuestionsBySubject(subjectId) {
   await Promise.all(uniqueIds.map((id) => deleteQuestion(id)));
   return true;
 }
+
+// GET /{team}/subjects/
+export async function fetchSubjects(page = 1, limit = 8, ordering = 'name') {
+  const offset = (page - 1) * limit;
+  const url = `${BASE_URL}subjects/?limit=${limit}&offset=${offset}&ordering=${ordering}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('네트워크 에러');
+  return res.json();
+}
