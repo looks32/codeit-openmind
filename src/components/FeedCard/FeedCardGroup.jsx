@@ -3,7 +3,7 @@ import FeedCard from './FeedCard';
 
 const GroupWrap = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 684px;
   min-height: 600px;
   margin: 0 auto;
   border-radius: 16px;
@@ -40,7 +40,11 @@ const Empty = styled.img`
   margin: auto;
 `;
 
-export default function FeedCardGroup({ questions = [], totalCount, onChange }) {
+export default function FeedCardGroup({
+  questions = [],
+  totalCount,
+  onChange,
+}) {
   const handleDeleted = (id) => {
     onChange?.(questions.filter((q) => q.id !== id));
   };

@@ -3,9 +3,7 @@ import { useState, useEffect } from 'react';
 import FeedCardQuestion from './FeedCardQuestion';
 import FeedCardAnswer from './FeedCardAnswer';
 import Reaction from '../Reaction';
-import { deleteQuestion } from '../../utill/api';
-
-// 임시 Badge, MoreButton, LikeButton, DislikeButton 컴포넌트
+import { deleteQuestion, postAnswer, patchAnswer } from '../../utill/api';
 
 const Badge = styled.span`
   display: inline-block;
@@ -57,6 +55,7 @@ const PopupItem = styled.div`
   &:active {
     background: var(--Gray10, #fff);
     color: var(--Blue, #1877f2);
+  }
 `;
 
 const EditIcon = styled.svg`
@@ -76,9 +75,25 @@ const EditIcon = styled.svg`
   }
 `;
 
+const RejectIcon = styled.svg`
+  display: inline-block;
+  color: var(--Gray50, #515151);
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  transition: color 0.15s ease;
+
+  ${PopupItem}:hover & {
+    color: var(--Gray60, #3b3b3b);
+  }
+
+  ${PopupItem}:active & {
+    color: var(--Blue, #1877f2);
+  }
+`;
+
 const DeleteIcon = styled.svg`
   display: inline-block;
-  margin-right: 4px;
 `;
 
 const CardWrap = styled.div`
@@ -133,7 +148,9 @@ export default function FeedCard({
   const [answerState, setAnswerState] = useState(answerProps.state);
 
   useEffect(() => {
-    setAnswerState(answerProps.state);
+    if (answerProps.state !== answerState) {
+      setAnswerState(answerProps.state);
+    }
   }, [answerProps.state]);
 
   const handleSave = (next) => {
@@ -190,6 +207,51 @@ export default function FeedCard({
                     수정하기
                   </PopupItem>
                 )}
+                {!isEditing && answerState !== 'rejected' && (
+                  <PopupItem
+                    onClick={async () => {
+                      setShowPopup(false);
+                      try {
+                        if (answerState === 'pending') {
+                          // 아직 답변이 없을 때: 거절 답변 생성
+                          await postAnswer(questionProps.id, '답변 거절', true);
+                        } else if (answerState === 'answered') {
+                          // 이미 답변이 있을 때: 거절로 상태 변경
+                          await patchAnswer(
+                            answerProps.answerId,
+                            localAnswer || '',
+                            true
+                          );
+                        }
+                        setAnswerState('rejected');
+                      } catch (e) {
+                        alert(`거절 실패: ${e?.message || ''}`);
+                      }
+                    }}
+                  >
+                    <RejectIcon
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C6.06294 22.75 1.25 17.9371 1.25 12ZM12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 17.1086 6.89137 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75Z"
+                        fill="black"
+                      />
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M18.9999 20.0001L3.99989 5.00011L5.06055 3.93945L20.0605 18.9395L18.9999 20.0001Z"
+                        fill="black"
+                      />
+                    </RejectIcon>
+                    거절하기
+                  </PopupItem>
+                )}
                 <PopupItem
                   onClick={async () => {
                     setShowPopup(false);
@@ -230,6 +292,7 @@ export default function FeedCard({
           {...answerProps}
           questionId={questionProps.id}
           answerId={answerProps.answerId}
+          state={answerState}
           answer={localAnswer}
           editing={isEditing}
           onSave={handleSave}
