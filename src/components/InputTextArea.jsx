@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 const StyledTextArea = styled.textarea`
   width: 100%;
-  height: ${props => props.height || '140px'};
+  height: ${(props) => props.height || '140px'};
   padding: 16px;
-  border: none;
+  border: 2px solid transparent;
   border-radius: 12px;
   background: #fafafa;
   font-size: 16px;
@@ -12,7 +12,9 @@ const StyledTextArea = styled.textarea`
   resize: none;
   outline: none;
   box-sizing: border-box;
-  transition: border 0.2s, background 0.2s;
+  transition:
+    border 0.2s,
+    background 0.2s;
 
   &::placeholder {
     color: #bdbdbd;
@@ -24,6 +26,18 @@ const StyledTextArea = styled.textarea`
   }
 `;
 
-export default function InputTextArea({ value, onChange, placeholder, ...props }) {
-  return <StyledTextArea value={value} onChange={onChange} placeholder={placeholder} {...props} />;
+export default function InputTextArea({
+  value,
+  onChange,
+  placeholder,
+  ...props
+}) {
+  return (
+    <StyledTextArea
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      {...props}
+    />
+  );
 }
