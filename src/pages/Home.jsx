@@ -48,7 +48,7 @@ function Home() {
 
         {/* 링크 기능 상윤님이 만들어 주시면 링크걸기 (질문하러 가기 버튼으로도 번경) */}
         {/* 아마도 링크는 ('/list' ) */}
-        <Button type="answer" />
+        <Button type="answer" to='/list'/>
       </MainHeader>
       <MainBody>
         <form onSubmit={onSubmit}>
