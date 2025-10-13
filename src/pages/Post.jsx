@@ -146,7 +146,7 @@ function Post() {
         <span className="full">질문 작성하기</span>
         <span className="short">질문 작성</span>
       </FloatingButton>
-      <Modal isOpen={isModalOpen}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalHeader>
           <img src="/question.svg" alt="질문" />
           <ModalLabel>질문을 작성하세요</ModalLabel>
