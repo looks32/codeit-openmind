@@ -103,6 +103,7 @@ function Button({
   height = '',
   type = '',
   children,
+  NoIcon = false,
   ...rest // disabled, onClick
 }) {
   const defaultText =
@@ -141,7 +142,7 @@ function Button({
         >
           {children || defaultText}
 
-          {iconTypes.includes(type) && (
+          {!NoIcon && iconTypes.includes(type) && (
             <ArrowIcon>
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
