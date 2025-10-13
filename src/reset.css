@@ -20,6 +20,9 @@
   --Yellow: #fee500;
   --Red: #b93333;
 }
+body {
+  background-color: var(--Gray20);
+}
 html,
 body,
 div,
@@ -147,4 +150,8 @@ table {
 a {
   color: #000;
   text-decoration: none;
+}
+/* 모달 */
+body.modal-open {
+  overflow: hidden;
 }

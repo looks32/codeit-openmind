@@ -25,21 +25,21 @@ export default function CustomMenu({ onSelect, onClose, selected }) {
       <MenuItem
         role="option"
         tabIndex={0}
-        aria-selected={selected === '이름순'}
-        onClick={() => choose('이름순')}
-        onKeyDown={(e) => handleKey(e, '이름순')}
-      >
-        이름순
-      </MenuItem>
-
-      <MenuItem
-        role="option"
-        tabIndex={0}
         aria-selected={selected === '최신순'}
         onClick={() => choose('최신순')}
         onKeyDown={(e) => handleKey(e, '최신순')}
       >
         최신순
+      </MenuItem>
+
+      <MenuItem
+        role="option"
+        tabIndex={0}
+        aria-selected={selected === '이름순'}
+        onClick={() => choose('이름순')}
+        onKeyDown={(e) => handleKey(e, '이름순')}
+      >
+        이름순
       </MenuItem>
     </>
   );
@@ -53,16 +53,18 @@ const MenuItem = styled.div`
   text-align: center;
   color: #000000; /* 기본 검정 */
   cursor: pointer;
-  transition: color 0.12s, background-color 0.12s;
+  transition:
+    color 0.12s,
+    background-color 0.12s;
   user-select: none;
 
   &:hover {
-    color: #3692FF; /* 호버시 파란색 */
+    color: #3692ff; /* 호버시 파란색 */
     background: transparent;
   }
 
   &:focus {
     outline: none;
-    background: rgba(54,146,255,0.06);
+    background: rgba(54, 146, 255, 0.06);
   }
 `;
