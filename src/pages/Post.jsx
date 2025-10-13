@@ -148,26 +148,28 @@ function Post() {
       </FloatingButton>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <ModalHeader>
-          <img src="/question.svg" alt="질문" />
-          <ModalLabel>질문을 작성하세요</ModalLabel>
+          <ModalHeaderWrap>
+            <img src="/question.svg" alt="질문" width="28" height="28" />
+            <ModalLabel>질문을 작성하세요</ModalLabel>
+          </ModalHeaderWrap>
           <CloseButton onClick={() => setIsModalOpen(false)}>✕</CloseButton>
         </ModalHeader>
 
         <ModalBody>
           <ProfileSection>
-            <span>To.</span>
-            <CircleImage src={subject?.imageSource} sizes="32px" />
+            <ToSpan>To.</ToSpan>
+            <CircleImage src={subject?.imageSource} sizes="28px" />
             <Name>{subject?.name}</Name>
           </ProfileSection>
 
-          <InputTextArea
+          <ModalInputTextArea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="질문을 입력해주세요"
             height="50%"
           />
 
-          <ButtonBox
+          <ModalButtonBox
             disabled={sending || !input.trim()}
             onClick={async () => {
               if (sending) return;
@@ -214,7 +216,7 @@ function Post() {
             }}
           >
             {sending ? '전송 중...' : '질문 보내기'}
-          </ButtonBox>
+          </ModalButtonBox>
         </ModalBody>
       </Modal>
     </>
@@ -250,9 +252,20 @@ const FloatingButton = styled(Button)`
 
 const ModalHeader = styled.div`
   display: flex;
+  width: 532px;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    width: 279px;
+  }
+`;
+
+const ModalHeaderWrap = styled.div`
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 8px;
-  position: relative;
 `;
 
 const ModalLabel = styled.h2`
@@ -266,21 +279,13 @@ const ModalLabel = styled.h2`
 `;
 
 const CloseButton = styled.button`
-  position: absolute;
-  top: -4px;
-  right: 0;
   background: none;
   border: none;
-  font-size: 16px;
   color: #999;
   cursor: pointer;
   font-size: 28px;
-  padding: 4px;
   width: 28px;
   height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover {
     color: #333;
@@ -288,9 +293,7 @@ const CloseButton = styled.button`
 `;
 
 const ModalBody = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+  margin-top: 40px;
   height: 100%;
 `;
 
@@ -298,14 +301,48 @@ const ProfileSection = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 0;
+  padding: 0 0 12px 0;
   font-size: 14px;
 `;
 
+const ToSpan = styled.span`
+  color: var(--Grayscale-60, #000);
+  font-feature-settings:
+    'liga' off,
+    'clig' off;
+  font-family: Actor;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 133.333% */
+`;
+
 const Name = styled.span`
-  font-weight: 600;
+  color: var(--Grayscale-60, #000);
+  font-feature-settings:
+    'liga' off,
+    'clig' off;
+  font-family: Pretendard;
   font-size: 16px;
-  color: #333;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 22px; /* 137.5% */
+`;
+
+const ModalInputTextArea = styled(InputTextArea)`
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    height: 326px;
+  }
+`;
+
+const ModalButtonBox = styled(ButtonBox)`
+  margin-bottom: 30px;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0;
+  }
 `;
 
 const TopRow = styled.div`
