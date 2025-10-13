@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const iconTypes = ['answer', 'question'];
 
 const ArrowIcon = styled.span`
@@ -49,6 +50,7 @@ const types = {
 
 const BaseButton = styled.button`
   height: ${({ height }) => `${height}` ?? '46px'};
+  height: ${({ height }) => `${height}` ?? '46px'};
   padding: 0;
   padding-left: ${({ width }) => (width ? '12px' : '24px')};
   border-radius: 8px;
@@ -82,6 +84,7 @@ const BaseButton = styled.button`
 `;
 // insert
 export const InsertButton = styled.button`
+export const InsertButton = styled.button`
   width: ${({ width }) =>
     typeof width === 'number' ? `${width}px` : width || '208px'};
   height: ${({ height }) =>
@@ -98,6 +101,7 @@ export const InsertButton = styled.button`
 `;
 
 function Button({
+  to = '',
   to = '',
   width = '',
   height = '',
@@ -121,12 +125,20 @@ function Button({
     rest.onClick?.(e);
   };
 
+  const navigate = useNavigate();
+  const handleNavigate = (e) => {
+    to && navigate(to);
+    rest.onClick?.(e);
+  };
+
   return (
     <div>
       {type === 'insert' ? (
         <InsertButton
           width={width}
           height={height}
+          {...rest}
+          onClick={handleNavigate}
           {...rest}
           onClick={handleNavigate}
         >
@@ -139,9 +151,12 @@ function Button({
           type={type}
           {...rest}
           onClick={handleNavigate}
+          {...rest}
+          onClick={handleNavigate}
         >
           {children || defaultText}
 
+          {!NoIcon && iconTypes.includes(type) && (
           {!NoIcon && iconTypes.includes(type) && (
             <ArrowIcon>
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

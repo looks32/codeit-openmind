@@ -10,6 +10,18 @@ const MainHeader = styled.div``;
 
 const MainBody = styled.div``;
 
+import styled from 'styled-components';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const MainWrap = styled.div``;
+
+const MainHeader = styled.div``;
+
+const MainBody = styled.div``;
+
 function Home() {
   const nav = useNavigate();
 
