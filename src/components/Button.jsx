@@ -17,7 +17,7 @@ const ArrowIcon = styled.span`
 
 const types = {
   answer: css`
-    width: ${({ width }) => `${width}` ?? '192px'};
+    width: ${({ width }) => `${width}` || '192px'};
     background-color: var(--Brown10);
     border: 1px solid var(--Brown40);
     color: var(--Brown40);
@@ -32,7 +32,7 @@ const types = {
   `,
   // 질문
   question: css`
-    width: ${({ width }) => `${width}` ?? '160px'};
+    width: ${({ width }) => `${width}` || '160px'};
     background-color: var(--Brown40);
     color: var(--Gray10);
     border: 2px solid transparent;
@@ -103,6 +103,7 @@ function Button({
   height = '',
   type = '',
   children,
+  NoIcon = false,
   ...rest // disabled, onClick
 }) {
   const defaultText =
@@ -141,7 +142,7 @@ function Button({
         >
           {children || defaultText}
 
-          {iconTypes.includes(type) && (
+          {!NoIcon && iconTypes.includes(type) && (
             <ArrowIcon>
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path
