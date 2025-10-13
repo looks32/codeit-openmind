@@ -175,8 +175,6 @@ function Post() {
               setSending(true);
               try {
                 const created = await postQuestion(subject?.id, content);
-                // API returns the created question; map it like load.js does
-                // and optimistically add it to the top. Keep hideAnswer: true on Post page.
                 if (created && created.id) {
                   const questionTime = formatRelativeTime(created.createdAt);
                   const newItem = {
@@ -276,6 +274,7 @@ const CloseButton = styled.button`
   font-size: 16px;
   color: #999;
   cursor: pointer;
+  font-size: 28px;
   padding: 4px;
   width: 28px;
   height: 28px;
