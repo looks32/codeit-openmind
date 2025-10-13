@@ -55,7 +55,7 @@ function Home() {
           <Input value="" placeholder="이름을 입력해주세요." name="username" />
 
           {/* 질문 받기 버튼에 크기 100% 버튼으로 변경 */}
-          <Button type="answer" />
+          <Button type="question" NoIcon />
         </form>
       </MainBody>
     </MainWrap>

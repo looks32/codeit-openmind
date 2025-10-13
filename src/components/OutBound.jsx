@@ -27,7 +27,7 @@ const ShowingText = styled.div`
   font-size: 16px;
   font-weight: 500;
   position: fixed;
-  top: 10%;
+  bottom: 60px;
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--Gray60);
