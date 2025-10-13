@@ -5,7 +5,8 @@ const StyledButton = styled.button`
   padding: 14px 0;
   border: none;
   border-radius: 8px;
-  background: ${({ disabled }) => (disabled ? "#e5ded9" : "#bdb0a7")};
+  border: 2px solid transparent;
+  background: ${({ disabled }) => (disabled ? "var(--Brown30)" : "var(--Brown40)")};
   color: #fff;
   font-size: 16px;
   font-weight: 600;
@@ -13,10 +14,12 @@ const StyledButton = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background: ${({ disabled }) => (disabled ? "#e5ded9" : "#a89a8b")};
+    border: 2px solid var(--Brown-50, #341909);
+    background: ${({ disabled }) => (disabled ? "var(--Brown30)" : "var(--Brown40)")};
   }
   &:active {
-    background: ${({ disabled }) => (disabled ? "#e5ded9" : "#8d7e6e")};
+    border: 2px solid var(--Brown-50, #341909);
+    background: ${({ disabled }) => (disabled ? "var(--Brown30)" : "var(--Brown50)")};
   }
 `;
 
