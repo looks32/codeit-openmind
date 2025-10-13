@@ -9,107 +9,6 @@ import Button from '../components/Button';
 import Pagination from '../components/Pagination';
 import QList from '../components/List/QList';
 
-const ListWrap = styled.div`
-  width: 100%;
-  max-width: 950px;
-  margin: 40px auto 0;
-
-  /* 테블릿 */
-  @media (max-width: 1199px) {
-    max-width: 100%;
-    padding: 0 32px;
-  }
-
-  /* 모바일 */
-  @media (max-width: 667px) {
-    padding: 0 24px;
-  }
-`;
-
-const ListHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  h1 {
-    a {
-      display: block;
-    }
-
-    img {
-      width: 146px;
-    }
-  }
-
-  /* 테블릿 */
-  @media (max-width: 1199px) {
-    padding: 0 18px;
-  }
-
-  /* 모바일 */
-  @media (max-width: 667px) {
-    display: block;
-    padding: 0;
-
-    > h1 a {
-      text-align: center;
-    }
-
-    > div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    button {
-      width: 127px;
-      height: 34px;
-      padding-left: 0;
-    }
-  }
-`;
-
-const ListBody = styled.div`
-  > .title {
-    margin: 40px 0 30px;
-    text-align: center;
-
-    h2 {
-      font-size: 40px;
-      width: 100%;
-      margin-bottom: 12px;
-    }
-  }
-
-  /* 모바일 */
-  @media (max-width: 667px) {
-    > .title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-align: left;
-      margin: 52px 0 16px;
-
-      h2 {
-        width: auto;
-        font-size: 24px;
-        margin-bottom: 0;
-      }
-    }
-  }
-`;
-
-const PagenationWrap = styled.div`
-  margin-top: 40px;
-  text-align: center;
-
-  /* 모바일 */
-  @media (max-width: 667px) {
-    margin-top: 30px;
-  }
-`;
-
 const LIMIT = 8;
 
 function List() {
@@ -219,3 +118,104 @@ function List() {
 }
 
 export default List;
+
+const ListWrap = styled.div`
+  width: 100%;
+  max-width: 950px;
+  margin: 40px auto 0;
+
+  /* 테블릿 */
+  @media (max-width: 1199px) {
+    max-width: 100%;
+    padding: 0 32px;
+  }
+
+  /* 모바일 */
+  @media (max-width: 667px) {
+    padding: 0 24px;
+  }
+`;
+
+const ListHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    a {
+      display: block;
+    }
+
+    img {
+      width: 146px;
+    }
+  }
+
+  /* 테블릿 */
+  @media (max-width: 1199px) {
+    padding: 0 18px;
+  }
+
+  /* 모바일 */
+  @media (max-width: 667px) {
+    display: block;
+    padding: 0;
+
+    > h1 a {
+      text-align: center;
+    }
+
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    button {
+      width: 127px;
+      height: 34px;
+      padding-left: 0;
+    }
+  }
+`;
+
+const ListBody = styled.div`
+  > .title {
+    margin: 40px 0 30px;
+    text-align: center;
+
+    h2 {
+      font-size: 40px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  }
+
+  /* 모바일 */
+  @media (max-width: 667px) {
+    > .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-align: left;
+      margin: 52px 0 16px;
+
+      h2 {
+        width: auto;
+        font-size: 24px;
+        margin-bottom: 0;
+      }
+    }
+  }
+`;
+
+const PagenationWrap = styled.div`
+  margin-top: 40px;
+  text-align: center;
+
+  /* 모바일 */
+  @media (max-width: 667px) {
+    margin-top: 30px;
+  }
+`;

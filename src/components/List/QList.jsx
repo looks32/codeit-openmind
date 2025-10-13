@@ -2,6 +2,31 @@ import styled from 'styled-components';
 import Loading from '../Loading';
 import Qcard from './Qcard';
 
+function QList({ sortList, loading }) {
+  return (
+    <QListWrap>
+      {loading ? (
+        <Loading />
+      ) : (
+        sortList.map((item) => {
+          return (
+            <li key={item.id}>
+              <Qcard
+                profile={item.imageSource}
+                nickName={item.name}
+                question={item.questionCount}
+                id={item.id}
+              />
+            </li>
+          );
+        })
+      )}
+    </QListWrap>
+  );
+}
+
+export default QList;
+
 const QListWrap = styled.ol`
   display: flex;
   justify-content: flex-start;
@@ -43,28 +68,3 @@ const QListWrap = styled.ol`
     }
   }
 `;
-
-function QList({ sortList, loading }) {
-  return (
-    <QListWrap>
-      {loading ? (
-        <Loading />
-      ) : (
-        sortList.map((item) => {
-          return (
-            <li key={item.id}>
-              <Qcard
-                profile={item.imageSource}
-                nickName={item.name}
-                question={item.questionCount}
-                id={item.id}
-              />
-            </li>
-          );
-        })
-      )}
-    </QListWrap>
-  );
-}
-
-export default QList;
