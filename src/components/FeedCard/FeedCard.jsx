@@ -225,7 +225,7 @@ export default function FeedCard({
                         }
                         setAnswerState('rejected');
                       } catch (e) {
-                        alert(`거절 실패: ${e?.message || ''}`);
+                        console.log(`거절 실패: ${e?.message || ''}`);
                       }
                     }}
                   >
@@ -261,7 +261,7 @@ export default function FeedCard({
                       await deleteQuestion(questionProps.id);
                       onDeleted?.(questionProps.id);
                     } catch (e) {
-                      alert(`삭제 실패: ${e?.message || ''}`);
+                      console.log(`삭제 실패: ${e?.message || ''}`);
                     } finally {
                       setDeleting(false);
                     }

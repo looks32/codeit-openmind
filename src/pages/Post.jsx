@@ -207,7 +207,7 @@ function Post() {
                   );
                 }
               } catch (e) {
-                alert(`처리 실패: ${e?.message || ''}`);
+                console.log(`처리 실패: ${e?.message || ''}`);
               } finally {
                 setSending(false);
                 setIsModalOpen(false);
