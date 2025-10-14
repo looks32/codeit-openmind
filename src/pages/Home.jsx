@@ -1,99 +1,22 @@
 import styled from 'styled-components';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import LogoImg from '../assets/logo.svg';
 import MainImage from '../assets/MainImage.svg';
-
-const mobileQuery = '@ media (max-width: 375px) and (max-height: 611px)';
+import MainImageMobile from '../assets/MainImageMobile.png';
+import logo from '../assets/logo.svg';
 
 const MainWrap = styled.div`
   position: relative;
   min-height: 100vh;
-  background: var(--gray10);
-  overflow: hidden;
-`;
+  background: url('${MainImage}') no-repeat center bottom;
+  background-size: contain;
 
-const AnswerButtonWrapper = styled.div`
-  position: absolute;
-  top: 45px;
-  right: 130px;
-  z-index: 30;
-
-  ${mobileQuery} {
-    top: 202px;
-    right: 125.5px;
+  @media (max-width: 767px) {
+    background-image: url('${MainImageMobile}');
+    background-size: contain;
   }
 `;
-
-const CenterWrap = styled.div`
-  position: relative;
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 120px;
-
-  ${mobileQuery} {
-    padding-top: 260px;
-  }
-`;
-
-
-const Logo = styled.img`
-  width: 100%;
-  height: 180px;
-  display: block;
-
-  ${mobileQuery} {
-    height: 98px;
-  }
-`;
-
-const Card = styled.div`
-  margin-top: 24px;
-  background: var(--gray10);
-  border-radius: 16px;
-  width: 100%;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px; /* 인풋과 버튼 사이 16px */
-  align-items: flex-start;
-
-  ${mobileQuery} {
-    width: 100%;
-    padding: 24px;
-    margin-top: 24px;
-  }
-`;
-const InputField = styled.div`
-  width: 100%;
-`;
-
-const QustionButtonWrapper = styled.div`
-  width: 100%;
-
-  ${mobileQuery} {
-    width: 100%;
-  }
-`;
-
-const BottomImage = styled.img`
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 627px;
-  object-fit: cover;
-  z-index: 10;
-
-  ${mobileQuery} {
-   height: 239px; 
-  }
-`;
-
 
 const Form = styled.form`
   display: flex;
@@ -102,23 +25,59 @@ const Form = styled.form`
 `;
 
 const MainHeader = styled.div`
+  position: relative;
   width: 100%;
-  box-sizing: border-box;
-  padding: 16px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  margin-top: 45px;
+  padding-top: 115px;
+  text-align: center;
+  button {
+    position: absolute;
+    right: 130px;
+    top: 0;
+    padding-left: 0;
+  }
 
-  ${mobileQuery} {
-    padding: 12px 16px;
+  @media (max-width: 767px) {
+    margin-top: 80px;
+    padding-top: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    h1 {
+      width: 100%;
+      margin-bottom: 24px;
+      img {
+        width: 248px;
+      }
+    }
+
+    button {
+      width: 123px;
+      height: 34px;
+      position: static;
+      font-size: 14px;
+    }
   }
 `;
 
 const MainBody = styled.div`
-  width: 100%;
-  box-sizing: border-box;
-`;
+  width: 400px;
+  margin: 24px auto 0;
+  padding: 32px;
+  border-radius: 16px;
+  background-color: var(--Gray10);
 
+  button {
+    padding-left: 0;
+  }
+
+  @media (max-width: 767px) {
+    width: calc(100% - 70px);
+    margin: 24px 35px 0;
+    box-sizing: border-box;
+  }
+`;
 
 function Home() {
   const nav = useNavigate();
@@ -154,23 +113,25 @@ function Home() {
   return (
     <MainWrap>
       <MainHeader>
-        <h1>로고</h1>
-
-        {/* 링크 기능 상윤님이 만들어 주시면 링크걸기 (질문하러 가기 버튼으로도 번경) */}
-        {/* 아마도 링크는 ('/list' ) */}
-        <Button type="answer" to='/list'/>
+        <h1>
+          <img src={logo} alt="오픈 마인드 로고" />
+        </h1>
+        <Button
+          type="answer"
+          to="/list"
+          children="질문하러 가기"
+          width="161px"
+        />
       </MainHeader>
       <MainBody>
-        <form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
           <Input value="" placeholder="이름을 입력해주세요." name="username" />
 
-          {/* 질문 받기 버튼에 크기 100% 버튼으로 변경 */}
-          <Button type="question" NoIcon />
-        </form>
+          <Button type="question" NoIcon width="100%" />
+        </Form>
       </MainBody>
     </MainWrap>
   );
 }
 
 export default Home;
-
