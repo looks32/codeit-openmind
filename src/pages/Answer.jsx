@@ -221,6 +221,9 @@ const RightBar = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-bottom: 9px;
+  width: 100%;
+  max-width: 684px;
+  margin: 0 auto 9px;
 `;
 
 const spin = keyframes`
