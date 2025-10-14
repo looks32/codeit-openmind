@@ -132,7 +132,7 @@ function Answer() {
                 setTotalCount(0);
                 setNextUrl(null);
               } catch (e) {
-                alert(`삭제 실패: ${e?.message || ''}`);
+                console.log(`삭제 실패: ${e?.message || ''}`);
               } finally {
                 setDeleting(false);
               }

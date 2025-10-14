@@ -82,7 +82,7 @@ function Reaction({
   const onClickLike = async () => {
     if (busy) return;
     if (storedReaction) {
-      alert('이미 반응을 남기셨습니다. 한 사람당 1번만 가능합니다.');
+      console.log('이미 반응을 남기셨습니다. 한 사람당 1번만 가능합니다.');
       return;
     }
     setBusy(true);
@@ -96,7 +96,7 @@ function Reaction({
       // 콜백이 전달된 경우 알림
       likeClick && likeClick();
     } catch (e) {
-      alert(`좋아요 실패: ${e?.message || ''}`);
+      console.log(`좋아요 실패: ${e?.message || ''}`);
     } finally {
       setBusy(false);
     }
@@ -105,7 +105,7 @@ function Reaction({
   const onClickDeLike = async () => {
     if (busy) return;
     if (storedReaction) {
-      alert('이미 반응을 남기셨습니다. 한 사람당 1번만 가능합니다.');
+      console.log('이미 반응을 남기셨습니다. 한 사람당 1번만 가능합니다.');
       return;
     }
     setBusy(true);
@@ -118,7 +118,7 @@ function Reaction({
       setStoredReaction('dislike');
       deLikeClick && deLikeClick();
     } catch (e) {
-      alert(`싫어요 실패: ${e?.message || ''}`);
+      console.log(`싫어요 실패: ${e?.message || ''}`);
     } finally {
       setBusy(false);
     }

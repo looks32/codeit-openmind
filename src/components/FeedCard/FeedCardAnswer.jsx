@@ -141,7 +141,7 @@ export default function FeedCardAnswer({
                     }
                     onSave && onSave(content);
                   } catch (e) {
-                    alert(`처리 실패: ${e?.message || ''}`);
+                    console.log(`처리 실패: ${e?.message || ''}`);
                   }
                 }}
               >
