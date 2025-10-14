@@ -3,6 +3,25 @@ import messages from '../../assets/ico_messages.png';
 import CircleImage from '../../components/Profile';
 import { Link } from 'react-router-dom';
 
+function Qcard({ profile, nickName, question = 0, id }) {
+  return (
+    <Card>
+      <Link to={`/post/${id}`} title={`${nickName}님의 질문으로 이동`}>
+        <div className="profile">
+          <CircleImage src={profile} sizes="60px" />
+        </div>
+        <strong>{nickName}</strong>
+        <div className="question_area">
+          <span className="title">받은 질문</span>
+          <span>{question}개</span>
+        </div>
+      </Link>
+    </Card>
+  );
+}
+
+export default Qcard;
+
 const Card = styled.div`
   border-radius: 16px;
   border: 1px solid #818181;
@@ -35,22 +54,3 @@ const Card = styled.div`
     }
   }
 `;
-
-function Qcard({ profile, nickName, question = 0, id }) {
-  return (
-    <Card>
-      <Link to={`/post/${id}`} title={`${nickName}님의 질문으로 이동`}>
-        <div className="profile">
-          <CircleImage src={profile} sizes="60px" />
-        </div>
-        <strong>{nickName}</strong>
-        <div className="question_area">
-          <span className="title">받은 질문</span>
-          <span>{question}개</span>
-        </div>
-      </Link>
-    </Card>
-  );
-}
-
-export default Qcard;
