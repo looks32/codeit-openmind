@@ -8,11 +8,12 @@ import logo from '../assets/logo.svg';
 
 const MainWrap = styled.div`
   position: relative;
-  min-height: 100vh;
+  min-height: calc(100vh - 45px);
   background: url('${MainImage}') no-repeat center bottom;
   background-size: contain;
 
   @media (max-width: 767px) {
+    min-height: calc(100vh - 90px);
     background-image: url('${MainImageMobile}');
     background-size: contain;
   }
